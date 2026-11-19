@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Tumble - Generating Puzzles</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="format-selector" id="top">
+    <span class="format-label">View:</span>
+    <a href="index.html" class="format-link">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+
+  <nav class="navbar"><ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="quick-start.html">Quick Start</a></li>
+    <li><a href="generating.html" class="active">Generating</a></li>
+    <li><a href="api-reference.html">API Reference</a></li>
+    <li><a href="demos.html">Demos</a></li>
+    <li><a href="troubleshooting.html">Troubleshooting</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul></nav>
+
+  <div class="hero">
+    <h1>Generating Puzzles</h1>
+    <p class="tagline">Every setting, what it does, and how the generator decides.</p>
+  </div>
+
+  <div class="page-layout">
+    <aside class="toc">
+      <h3>On this page</h3>
+      <ul>
+        <li><a href="#window">The window</a></li>
+        <li><a href="#board">Board</a></li>
+        <li><a href="#goal">Goal</a></li>
+        <li><a href="#gimmicks">Gimmicks</a></li>
+        <li><a href="#trim">Trim</a></li>
+        <li><a href="#quality">Quality</a></li>
+        <li><a href="#stars">How the stars work</a></li>
+        <li><a href="#auto">Auto and presets</a></li>
+        <li><a href="#seeds">Seeds, batches and saving</a></li>
+        <li><a href="#honesty">Limits and notes</a></li>
+        <li><a href="#code">Generating from code</a></li>
+      </ul>
+    </aside>
+    <main class="content">
+
+      <div class="section">
+        <h2 id="window">The Tumble Generator window</h2>
+        <p>Open <strong>Window &gt; Living Failure &gt; Simple Tumble &gt; Tumble Generator</strong>. The settings are on
+          the left in five sections (Board, Goal, Gimmicks, Trim and Quality), with <strong>Auto</strong>,
+          <strong>Presets</strong> and <strong>Reset</strong> above them and the seed, batch and <strong>Generate</strong>
+          controls below. The puzzles you've made are on the right, one at a time with the analysis pane, and the arrows
+          page through them.</p>
+        <p>Every puzzle the window makes goes through <strong>verified generation</strong>: if a board misses what you
+          asked for, the generator builds another from the next seed, and if none of its tries succeed it gives you the
+          closest one with a note saying why. Generation runs on a background thread with a progress bar that says which
+          board it is on and what it is doing, and a <strong>Cancel</strong> button that stops it within a fraction of a
+          second. Your settings and the unsaved puzzles survive a recompile.</p>
+        <p>Each table below gives the label in the window, the matching field on <span class="k">TumbleSettings</span> for
+          code, its range and its default. Values outside the range are clamped, so code can pass anything.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="board">Board</h2>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>Outline</td><td><code>Outline</code></td><td>Full, Cross, Ring, Diamond, Circle, Heart, L, T, U, Custom
+            (Full)</td><td>The board's shape. Tiles outside the outline aren't there at all. A shape needs a loop the cube
+            can roll round to turn its faces (an open 2 x 2 square, or a big enough ring), or it holds no puzzle and the
+            generator says so in a note.</td></tr>
+          <tr><td>Rows</td><td><code>CustomShape</code></td><td>up to 24 x 24</td><td>Custom outline only: one line per
+            row, top row first, <code>#</code> for a tile and <code>.</code> for no tile. The rows set the board's size,
+            and the window tells you when they don't make a board yet.</td></tr>
+          <tr><td>Width, Height</td><td><code>Width</code>, <code>Height</code></td><td>2 to 24 (6 x 6)</td><td>The board
+            in tiles. A one-goal puzzle uses about 17 tiles whatever the size (measured), so bigger boards suit more
+            gimmicks, more targets or Trim.</td></tr>
+          <tr><td>Obstacles</td><td><code>Obstacles</code></td><td>0 to 0.45 (0.28)</td><td>The share of the board taken by
+            walls and holes. The free tiles always stay connected.</td></tr>
+          <tr><td>Hole share</td><td><code>HoleShare</code></td><td>0 to 1 (0.3)</td><td>The share of the obstacles that
+            are holes, with the rest walls. Both block the cube the same way, and only the look differs.</td></tr>
+          <tr><td>Turning room</td><td><code>TurningRoom</code></td><td>0 to 0.5 (0.12)</td><td>The share of the board's
+            turning spots the layout keeps. A turning spot is an open 2 x 2 square, where the cube can roll round on the
+            spot to change which face is down. Less room means the cube has to go further out of its way to turn, which is
+            harder. The sweet spot is 0.02 to 0.15, and 0 can leave the cube unable to turn at all.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="goal">Goal</h2>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>Mode</td><td><code>Mode</code></td><td>Reach Goal, Stamp All (Reach Goal)</td><td><strong>Reach
+            Goal</strong>: roll onto the goal with the goal face down. <strong>Stamp All</strong>: land with the goal face
+            down on every target tile to stamp it.</td></tr>
+          <tr><td>Goal face</td><td><code>GoalFace</code></td><td>Random, or face 0 to 5 (Random, which is -1)</td><td>The
+            face that must be down on the goal, or pressed onto every target. Each face is a colour and a shape: 0 is the
+            red dot, 1 the blue square, 2 the yellow triangle, 3 the green diamond, 4 the purple star and 5 the orange
+            hexagon. Opposite faces add up to 5. Random picks one for each puzzle.</td></tr>
+          <tr><td>Targets</td><td><code>Targets</code></td><td>1 to 8 (4)</td><td>Stamp All only: the target tiles, spread
+            out, each as far as it gets from the others.</td></tr>
+          <tr><td>In order</td><td><code>Ordered</code></td><td>on or off (off)</td><td>Stamp All only: the targets are
+            numbered checkpoints, stamped in their order. The generator gives them the order that makes the longest puzzle
+            (trying every order up to 5 targets, and searching past that).</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="gimmicks">Gimmicks</h2>
+        <p>Every gimmick works in both modes. Each one is placed where it lengthens the puzzle most, and the solver proves it
+          together with the rest of the board.</p>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>Keys and doors</td><td><code>Keys</code></td><td>0 to 4 (0)</td><td>Each key opens its own door, a tile
+            the cube can't roll onto until it has rolled onto the key. The door sits on the best solutions and its key far
+            from it.</td></tr>
+          <tr><td>Switches</td><td><code>Switches</code></td><td>0 to 4 (0)</td><td>Rolling onto a switch flips its gates,
+            open to shut or shut to open, every time.</td></tr>
+          <tr><td>Gates per switch</td><td><code>GatesPerSwitch</code></td><td>1 to 3 (1)</td><td>The first gate starts
+            shut on the best solutions. Each one after it goes where it lengthens the puzzle most, starting shut or
+            open.</td></tr>
+          <tr><td>Face locks</td><td><code>FaceLocks</code></td><td>on or off (off)</td><td>Needs keys or switches. A
+            locked key is only taken, and a locked switch only pressed, when one face lands on it. Each gets the face that
+            lengthens the puzzle most, and only where that makes a difference, so the rest answer any face.</td></tr>
+          <tr><td>Avoid tiles</td><td><code>Avoid</code></td><td>0 to 16 (0)</td><td>Tiles one face must never be down
+            on.</td></tr>
+          <tr><td>One-way tiles</td><td><code>OneWays</code></td><td>0 to 16 (0)</td><td>Tiles the cube may only cross in
+            their arrow's direction, onto them and off them.</td></tr>
+          <tr><td>Multi-face tiles</td><td><code>MultiFaces</code></td><td>0 to 4 (0)</td><td>Each needs several faces
+            pressed onto it (landing on it with that face down), in any order, before the puzzle can be won. They are a lot
+            of turning work, so puzzles with one rarely rate below 3 stars.</td></tr>
+          <tr><td>Faces per tile</td><td><code>FacesPerTile</code></td><td>2 to 3 (2)</td><td>How many faces each
+            multi-face tile needs.</td></tr>
+          <tr><td>Turntables</td><td><code>Turntables</code></td><td>0 to 4 (0)</td><td>Rolling onto a turntable turns the
+            cube a quarter turn on the spot. A turntable is a free turn, so it is placed as a tool the puzzle needs: the
+            start is picked where every turntable is needed (without one, there's no win or a longer one), on a corridor
+            tile. Boards with little turning room need them most.</td></tr>
+          <tr><td>Crumbling tiles</td><td><code>Crumbling</code></td><td>0 to 4 (0)</td><td>Each holds the cube once and
+            breaks when it rolls off, leaving a hole. Like turntables they go in last, at a start where every one makes the
+            par longer. Boards with little turning room gain the most: 2 to 5 rolls a tile when reaching the goal and 8 to 12
+            when stamping targets (measured).</td></tr>
+          <tr><td>Portal pairs</td><td><code>Portals</code></td><td>0 to 2 (0)</td><td>Rolling onto one tile of a pair, the
+            cube comes out of the other still rolling, one more tile the same way. They go in last as forced tools: every
+            best solution goes through every pair, and the par is longer than with those tiles plain floor.</td></tr>
+        </table>
+        <div class="callout info"><p><strong>The cube's progress fits in 10 bits.</strong> Every target to stamp, key,
+          switch, face a multi-face tile needs and crumbling tile takes one, and the window shows the total under the
+          gimmicks. Avoid tiles, one-way tiles, turntables and portals take none. Auto trims a request that asks for more
+          than 10. A board with no room for a gimmick you asked for gets fewer, and its note says so.</p></div>
+        <div class="callout tip"><p><strong>Every gimmick matters.</strong> After placing, each gimmick is tried taken away
+          and the par compared. The start is picked again where the most of them change the puzzle, and one that still
+          makes no difference is taken away (the par never changes when it is). A gimmick is only left in place when
+          taking it away would let the cube get stuck, and then the note says so.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="trim">Trim</h2>
+        <p>A one-goal puzzle uses about 17 tiles however big the board is, so on a big board most of it is scenery. Trim cuts
+          the tiles far from the solution away and crops the board, so a big board becomes a compact shape round its
+          puzzle.</p>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>Trim</td><td><code>Trim</code></td><td>Off, Loose, Tight (Off)</td><td><strong>Off</strong> keeps the
+            whole board. <strong>Loose</strong> keeps every tile on any best solution, so the par, the number of best
+            solutions and the stars don't change. <strong>Tight</strong> keeps the tiles of one best solution: the par
+            doesn't change, there are fewer best solutions, and the stars are rated again.</td></tr>
+          <tr><td>Margin</td><td><code>TrimMargin</code></td><td>0 to 3 (1)</td><td>Tiles kept round the solution. With
+            Tight, 0 leaves only the answer's own tiles, so the board gives the answer away.</td></tr>
+        </table>
+        <p>Measured on 12 x 12 boards (40 puzzles), a tight trim with margin 1 takes the average number of best solutions
+          from 6.7 to 4.3, and puzzles with a single best solution from 3 to 6 of the 40. Margin 0 gets 23 of the 40 down to
+          one, but at the price of a board shaped like its answer. With <strong>No soft locks</strong> on, a trim that
+          would let the cube get stuck widens its margin, or the board is kept whole, with a note.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="quality">Quality</h2>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>No soft locks</td><td><code>NoSoftLocks</code></td><td>on or off (on)</td><td>Only keep puzzles where the
+            cube can never reach a position it can't win from. Only one-way tiles and switches can cause one (a press can
+            shut a gate behind the cube). Every puzzle reports it in <span class="k">CanGetStuck</span> either
+            way.</td></tr>
+          <tr><td>Target stars</td><td><code>TargetDifficulty</code></td><td>0 to 5 (0)</td><td>0 means any, and gives the
+            hardest start the board has. 1 to 5 picks a start inside that star band, and tries more boards until one rates
+            exactly that. Every gimmick you ask for wins over the stars: a target they can't go down to comes back as the
+            closest puzzle, with a note.</td></tr>
+          <tr><td>Par window</td><td><code>MinPar</code>, <code>MaxPar</code></td><td>1 to 400 (4, and 0)</td><td>A puzzle
+            needs at least MinPar rolls, and at most MaxPar, where 0 means no upper limit.</td></tr>
+          <tr><td>Min coverage</td><td><code>MinCoverage</code></td><td>0 to 0.9 (0)</td><td>The best solution must roll
+            over at least this share of the board's tiles.</td></tr>
+          <tr><td>Goal tries</td><td><code>GoalTries</code></td><td>1 to 32 (6)</td><td>Under Advanced: goals (or sets of
+            targets) tried on each board. The best puzzle among them is kept.</td></tr>
+          <tr><td>Max attempts</td><td><code>MaxAttempts</code></td><td>1 to 500 (40)</td><td>Under Advanced: boards tried
+            for each puzzle before falling back to the closest one.</td></tr>
+          <tr><td>State budget</td><td><code>StateBudget</code></td><td>1,000 to 5,000,000 (500,000)</td><td>Under
+            Advanced: the positions the solver may explore. The generator never uses less than every position the board can
+            hold, so its puzzles are always solved exactly. The budget matters for hints and for solving puzzles you made
+            by hand.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="stars">How the stars work</h2>
+        <p>Every proven puzzle gets a 1 to 5 star difficulty, or 0 when it isn't proven solvable. The score is the par plus
+          2 for every roll spent turning beyond the plain walk, where the plain walk is the shortest route to the goal with
+          any face down (or the shortest tour over the targets). Walking is easy, and the extra rolls you spend getting the
+          right face down are the part you have to plan, so they count three times.</p>
+        <table>
+          <tr><th>Stars</th><th>Reach the goal (score)</th></tr>
+          <tr><td>1</td><td>up to 26</td></tr>
+          <tr><td>2</td><td>27 to 32</td></tr>
+          <tr><td>3</td><td>33 to 40</td></tr>
+          <tr><td>4</td><td>41 to 51</td></tr>
+          <tr><td>5</td><td>52 and up</td></tr>
+        </table>
+        <p>The bands were measured over 600 everyday boards (sizes 5 to 14, obstacles 15 to 40%, turning room 2 to 30%),
+          so each star covers about a fifth of them. Stamping more targets makes longer puzzles, so Stamp All has its own
+          bands for each target count:</p>
+        <table>
+          <tr><th>Targets</th><th>1 star</th><th>2 stars</th><th>3 stars</th><th>4 stars</th><th>5 stars</th></tr>
+          <tr><td>1</td><td>up to 26</td><td>to 32</td><td>to 40</td><td>to 51</td><td>above</td></tr>
+          <tr><td>2</td><td>up to 50</td><td>to 59</td><td>to 71</td><td>to 87</td><td>above</td></tr>
+          <tr><td>3</td><td>up to 63</td><td>to 73</td><td>to 87</td><td>to 108</td><td>above</td></tr>
+          <tr><td>4</td><td>up to 73</td><td>to 86</td><td>to 101</td><td>to 126</td><td>above</td></tr>
+          <tr><td>5</td><td>up to 81</td><td>to 95</td><td>to 112</td><td>to 139</td><td>above</td></tr>
+          <tr><td>6</td><td>up to 89</td><td>to 106</td><td>to 124</td><td>to 154</td><td>above</td></tr>
+          <tr><td>7</td><td>up to 98</td><td>to 115</td><td>to 135</td><td>to 165</td><td>above</td></tr>
+          <tr><td>8</td><td>up to 107</td><td>to 125</td><td>to 147</td><td>to 182</td><td>above</td></tr>
+        </table>
+        <p>Stars are one scale for every puzzle. A key fetched, a switch pressed or a face stamped on a multi-face tile all
+          count as rolls, so a puzzle with gimmicks honestly rates harder. Asking for 1 to 5 stars hits nearly always with a
+          single key, switch, avoid or one-way tile, face lock, turntable, crumbling tile or portal pair. Multi-face tiles
+          rarely go below 3 stars, and neither do heavy mixes of gimmicks. Without a target, most puzzles with gimmicks rate
+          5 stars, because the hardest start is picked.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="auto">Auto and presets</h2>
+        <p><strong>Auto</strong> fixes settings that fight each other and tells you what it changed. The window also shows
+          what Auto would change, live, as a warning under the settings. In code it is
+          <span class="k">TumblePresets.Tune</span>. It:</p>
+        <ul>
+          <li>cuts crumbling tiles, then multi-face tiles, then switches, then keys until the cube's progress fits in 10
+            bits;</li>
+          <li>turns Face locks off when there are no keys or switches to lock;</li>
+          <li>raises Turning room to 0.02 when it is lower, since with none the cube may have nowhere to turn;</li>
+          <li>raises a tight trim's Margin to 1 when it is 0, since that board gives the answer away;</li>
+          <li>sets the outline back to Full when custom rows don't make a board;</li>
+          <li>raises Target stars to what the keys and switches can go down to: with all of them in, 2 never rated below 3
+            stars when reaching the goal, and 3 or more never below 5 (or 4 when stamping targets), measured;</li>
+          <li>raises Target stars to 3 with a multi-face tile, which rarely rates lower.</li>
+        </ul>
+        <p><strong>Presets</strong> replace every setting with a ready-made recipe. In code they are
+          <span class="k">TumblePresets.All</span>, and each one's <span class="k">Make()</span> gives a fresh
+          <span class="k">TumbleSettings</span>. Each was built 5 times for this page, and every one of the 100 puzzles got
+          everything its recipe asked for.</p>
+        <table>
+          <tr><th>Preset</th><th>What you get</th></tr>
+          <tr><td>Classic/Reach the goal</td><td>6 x 6: roll the cube to the goal with the right face down.</td></tr>
+          <tr><td>Classic/First puzzle</td><td>5 x 5, aiming for 1 star: a first level.</td></tr>
+          <tr><td>Classic/Stamp the targets</td><td>8 x 8: press the face on 4 targets, in any order.</td></tr>
+          <tr><td>Classic/Checkpoints</td><td>8 x 8: stamp 3 targets in their numbered order.</td></tr>
+          <tr><td>Difficulty/Easy</td><td>6 x 6 aiming for 2 stars.</td></tr>
+          <tr><td>Difficulty/Hard</td><td>7 x 7 with little turning room, aiming for 5 stars.</td></tr>
+          <tr><td>Difficulty/Big board, trimmed</td><td>12 x 12 trimmed tight round one best solution: a compact shape with
+            fewer ways to do it best.</td></tr>
+          <tr><td>Gimmicks/Keys and doors</td><td>7 x 7 with 2 keys, each opening its own door.</td></tr>
+          <tr><td>Gimmicks/Switches and gates</td><td>7 x 7 with 2 switches, 2 gates each.</td></tr>
+          <tr><td>Gimmicks/Face locks</td><td>7 x 7 with a key and a switch that only answer one face.</td></tr>
+          <tr><td>Gimmicks/Avoid tiles</td><td>7 x 7 with 4 tiles one face must never be down on.</td></tr>
+          <tr><td>Gimmicks/One-way tiles</td><td>7 x 7 with 2 arrows, and no way to get stuck.</td></tr>
+          <tr><td>Gimmicks/Multi-face tile</td><td>7 x 7 with one tile that needs 2 faces pressed on it.</td></tr>
+          <tr><td>Gimmicks/Turntables</td><td>7 x 7 with little turning room and 2 turntables the puzzle needs.</td></tr>
+          <tr><td>Gimmicks/Crumbling tiles</td><td>8 x 8 with little turning room and 2 tiles that break once the cube rolls
+            off.</td></tr>
+          <tr><td>Gimmicks/Portals</td><td>8 x 8 with a portal pair every best solution goes through.</td></tr>
+          <tr><td>Gimmicks/Everything</td><td>8 x 8: a key, a switch, an avoid tile, a one-way tile, a turntable, a crumbling
+            tile and a portal pair.</td></tr>
+          <tr><td>Shapes/Ring</td><td>9 x 9 cut to a square ring: the cube turns by going round it.</td></tr>
+          <tr><td>Shapes/Cross</td><td>9 x 9 cut to a fat plus.</td></tr>
+          <tr><td>Shapes/Heart</td><td>10 x 10 cut to a heart, with 3 targets to stamp.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="seeds">Seeds, batches and saving</h2>
+        <p>The same settings and the same seed always give the same puzzle. In the window, <strong>Random</strong> uses a
+          fresh seed for every Generate and shows the one it used. Turn Random off to type a seed and keep it, and
+          <strong>Copy</strong> copies it. Each puzzle in a batch gets its own seed, the batch's seed followed by a dash and
+          the puzzle's number (<code>-0</code>, <code>-1</code> and so on), and every puzzle stores its own seed, which the
+          analysis pane can copy.</p>
+        <p>Verified generation tries the seed itself first, then the same seed with <code>#1</code>, <code>#2</code> and so
+          on added, until a puzzle meets the request. A puzzle's stored seed is the one that worked, such as
+          <code>level-7-5#1</code>, so with the same settings it always rebuilds that exact puzzle.</p>
+        <p><strong>Batch count</strong> makes 1 to 50 puzzles per click and adds them to the set.
+          <strong>Clear on generate</strong> empties the set first, so each click replaces the batch.
+          <strong>Time limit</strong> (0 to 600 seconds, 60 by default, 0 for none) is how long one puzzle may take: past
+          it, generation keeps the closest board that finished, with a note, and if no board finished, that puzzle is
+          listed as not made and the batch carries on. The limit is shared with the inspectors' Re-roll.</p>
+        <p><strong>Only on target</strong> hides the fallbacks, and the cross removes a puzzle from the set.
+          <strong>Save</strong> then writes <em>Current</em> as a <span class="k">TumblePuzzleAsset</span>, or <em>Pack
+          (all)</em> or <em>Pack (on target only)</em> as a <span class="k">TumblePuzzlePack</span>, using the name in
+          <strong>Save name</strong> as the suggestion.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="honesty">Limits and notes</h2>
+        <p>The generator never quietly gives you less than you asked for. Whenever something didn't go to plan, the puzzle's
+          <span class="k">Notes</span> say what happened, and the analysis pane shows every one. Each note starts with what
+          it is about:</p>
+        <ul>
+          <li><strong>Target difficulty</strong> and <strong>Difficulty:</strong> no puzzle in the attempts had the stars
+            you asked for. You got the closest, with a hint which way to change the settings. A tight trim can also move a
+            puzzle off its star target, and the note says so.</li>
+          <li><strong>Verified:</strong> no puzzle in the attempts was solvable inside your par window, coverage and soft
+            lock rule, or none had room for every gimmick you asked for.</li>
+          <li><strong>Keys, Switches, Avoid, One-ways, Multi-face tiles, Turntables, Crumbling tiles, Portals and
+            Targets:</strong> the board only had room for some of them, and the note says how many and why.</li>
+          <li><strong>Gimmicks:</strong> some gimmick made no difference from the best start and was taken away, or stays
+            because taking it away would let the cube get stuck.</li>
+          <li><strong>Par:</strong> the board's longest puzzle was shorter than your minimum, or no start fitted under your
+            maximum.</li>
+          <li><strong>Trim:</strong> the margin was widened, or the board kept whole, so the cube can't get stuck, or a key
+            or switch off the kept solution went with the cut tiles.</li>
+          <li><strong>Shape</strong>, <strong>Obstacles</strong> and <strong>Start:</strong> the outline or custom rows left
+            too few tiles, there wasn't room for every obstacle, or no position on the board can win at all.</li>
+          <li><strong>Time limit:</strong> generation stopped at the time limit, and this is the closest of the boards that
+            finished.</li>
+          <li><strong>Solver:</strong> the state budget ran out before the search finished, which only happens when your own
+            code calls the solver with a budget smaller than the board (the generator, Verify and hints never do), or there are more than 1,000,000,000 best solutions and the count stops
+            there.</li>
+        </ul>
+        <p>Use <span class="k">TumbleAudit.MeetsRequest(puzzle)</span> to check whether a puzzle got everything its
+          settings asked for, and <span class="k">TumbleAudit.Missing(puzzle)</span> to list what it missed. A pack's
+          inspector can re-roll every puzzle in the pack that missed something (<strong>Re-roll &gt;
+          Fallbacks</strong>).</p>
+      </div>
+
+      <div class="section">
+        <h2 id="code">Generating from code</h2>
+        <p>Everything the window does is available from code through <span class="k">TumbleGenerator</span>. Your settings
+          object is copied and clamped first, so it is never changed.</p>
+<pre><code>using SimpleTumble;
+
+var s = new TumbleSettings
+{
+    Width = 8, Height = 8,
+    Mode = TumbleMode.StampAll,
+    Targets = 3,
+    Ordered = true,               // numbered checkpoints, stamped in order
+    TargetDifficulty = 4,
+    Seed = "level-7",             // empty = a fresh random seed
+};
+
+TumbleData one = TumbleGenerator.Generate(s);            // one puzzle from this exact seed, solved and rated
+TumbleData good = TumbleGenerator.GenerateVerified(s);   // tries seeds until the puzzle meets the request
+List&lt;TumbleData&gt; pack = TumbleGenerator.GenerateBatch(s, 10);   // seeds level-7-0 to level-7-9, each verified</code></pre>
+        <p><span class="k">Generate</span>, <span class="k">GenerateVerified</span> and <span class="k">GenerateBatch</span>
+          each have an <span class="k">Async</span> version that runs on a background thread and takes a
+          <span class="k">CancellationToken</span>. In Unity, <span class="k">await</span> carries on on the main thread
+          afterwards. <span class="k">GenerateBatchAsync</span> also reports progress:</p>
+<pre><code>var progress = new Progress&lt;int&gt;(n =&gt; Debug.Log($"{n} of 10 done"));
+List&lt;TumbleData&gt; puzzles = await TumbleGenerator.GenerateBatchAsync(s, 10, progress, cancel.Token);</code></pre>
+        <p>For a time limit and a running report of what a board is doing, use
+          <span class="k">GenerateVerified(settings, cancel, progress, timeLimitSeconds)</span>, which the window uses. See
+          the <a href="api-reference.html">API Reference</a>.</p>
+        <div class="callout tip"><p><strong>How long it takes</strong> (measured on a desktop, 5 builds of each preset; a
+          phone is slower): plain boards take 2 to 30 milliseconds, boards with keys, switches, turntables or crumbling
+          tiles 20 to 300, portals about 80, and the Everything preset 0.3 to 0.7 seconds. The slow case is many targets in
+          any order together with keys and switches, which can take from several seconds to over a minute a board. In a
+          game, generate with the Async versions (the demo does) or ahead of time in the editor as a pack.</p></div>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="footer">
+    <p>Simple Tumble by Living Failure. <a href="about.html">About and support</a></p>
+  </div>
+
+</div>
+</body>
+</html>

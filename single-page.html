@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Tumble - Documentation (single page)</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<!-- Generated from the other documentation pages, which hold the same text. -->
+<div class="page-wrap">
+
+  <div class="format-selector" id="top">
+    <span class="format-label">View:</span>
+    <a href="index.html" class="format-link">Multi-Page</a>
+    <a href="single-page.html" class="format-link active">Single Page</a>
+  </div>
+
+  <div class="page-layout">
+    <aside class="toc">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#index">Home</a></li>
+        <li><a href="#quick-start">Quick Start</a></li>
+        <li><a href="#generating">Generating</a></li>
+        <li><a href="#api-reference">API Reference</a></li>
+        <li><a href="#demos">Demos</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </aside>
+    <main class="content">
+
+      <div class="hero" id="index">
+    <h1>Simple Tumble</h1>
+    <p class="tagline">Rolling cube puzzles for Unity that are generated, solved exactly and rated.</p>
+    <p class="sub-tagline">Simple Tumble builds a rolling cube puzzle from your settings, then proves it can be solved and
+      works out its <strong>par</strong>, the fewest rolls it takes. The cube tips from tile to tile, and the puzzle is
+      won with the right face down on the goal or pressed onto every target. It can add keys and doors, switches and
+      gates, avoid and one-way tiles, multi-face tiles, turntables, crumbling tiles and portals, on square boards or
+      shaped ones. Every puzzle is rated 1 to 5 stars and can be saved as a ScriptableObject, exported as a PNG or SVG
+      picture, or played in the included 3D demo.</p>
+    <div class="pill">Version 1.0, by Living Failure</div>
+      </div>
+
+
+      <div class="section">
+        <h2 id="index-what">What it is</h2>
+        <p>Simple Tumble is a rolling cube puzzle generator with a solver built in. A cube sits on a grid of tiles, and each
+          roll tips it over one of its bottom edges onto the next tile north, east, south or west. Every roll changes which
+          face is down, so getting the right face onto the right tile takes planning: the straight route usually arrives
+          the wrong way up. You choose the board and what goes on it, and it builds a puzzle for you. Then it searches
+          every position the puzzle can reach, so you know for certain that it can be solved and how many rolls the best
+          solution takes.</p>
+        <p>The core doesn't care what the cube looks like. Tiles, faces and directions are plain numbers, so the same
+          puzzle can be a die, a crate, a robot or anything else that tumbles. In the editor pictures and in the demo every
+          face has its own shape as well as its own colour (a red dot, a blue square, a yellow triangle, a green diamond, a
+          purple star and an orange hexagon), so colour-blind players can tell them apart.</p>
+        <p>Everything is deterministic. The same settings and the same seed always give the same puzzle, and every puzzle
+          keeps the settings and seed it was made from. When the generator can't give you exactly what you asked for, it
+          says so in the puzzle's notes instead of quietly handing you something else.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="index-rules">The rules</h2>
+        <div class="feature-grid">
+          <div class="feature-card"><h4>Reach the goal</h4><p>Roll the cube onto the goal tile with the goal face down.
+            Arriving with any other face down doesn't count, so the cube has to turn on the way.</p></div>
+          <div class="feature-card"><h4>Stamp the targets</h4><p>Land on every target tile (1 to 8 of them) with the goal
+            face down to stamp it. They can be stamped in any order, or in their numbered order as checkpoints.</p></div>
+        </div>
+        <div class="callout info"><p>Walls and holes block the cube the same way, and so does the edge of the board. A
+          roll the rules don't allow simply doesn't happen, and the rules say why. Every gimmick follows the same idea:
+          the cube is either allowed onto a tile or it isn't, and what it does there is fixed.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="index-features">Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card"><h4>Proven par</h4><p>The solver searches every position the puzzle can reach, so the
+            par is the true minimum and not an estimate. It also counts how many best solutions there are.</p></div>
+          <div class="feature-card"><h4>Difficulty in stars</h4><p>A 1 to 5 star rating from the par and the turning the
+            cube has to do beyond the plain walk. Ask for a star count and the generator picks the start to match.</p></div>
+          <div class="feature-card"><h4>Board size and shape</h4><p>Boards from 2 to 24 tiles each way, as a full
+            rectangle, a cross, ring, diamond, circle, heart, L, T or U, or any outline you type in, with walls and holes on
+            up to 45% of it.</p></div>
+          <div class="feature-card"><h4>Keys, doors, switches and gates</h4><p>Up to 4 keys, each opening its own door,
+            and up to 4 switches that flip 1 to 3 gates each. Face locks make a key or a switch answer only one face.</p></div>
+          <div class="feature-card"><h4>Tricky tiles</h4><p>Avoid tiles one face must never be down on, one-way tiles,
+            multi-face tiles that need 2 or 3 faces pressed on them, turntables, crumbling tiles that break once the cube
+            rolls off, and portal pairs.</p></div>
+          <div class="feature-card"><h4>Every gimmick matters</h4><p>Each one is placed where it lengthens the puzzle,
+            and the puzzle is checked so that none is left doing nothing. Turntables, crumbling tiles and portals are
+            placed as tools the best solution needs.</p></div>
+          <div class="feature-card"><h4>No soft locks</h4><p>Every puzzle reports whether the cube can reach a position it
+            can't win from. <span class="k">NoSoftLocks</span>, on by default, only accepts puzzles where that never
+            happens.</p></div>
+          <div class="feature-card"><h4>Printable export</h4><p>Save any puzzle as a PNG or SVG: the colour view, a black
+            on white printable sheet that draws every face by its shape alone, or an answer key with the best solution
+            drawn on as a line.</p></div>
+          <div class="feature-card"><h4>ScriptableObjects</h4><p>Save single puzzles or ordered packs, with inspectors
+            that preview, re-check and regenerate them.</p></div>
+          <div class="feature-card"><h4>Play rules included</h4><p><span class="k">TumbleRules</span> tells your game what
+            a roll does, using the same rules the solver counted with, so the game and the par always agree. It also gives
+            hints from any position.</p></div>
+          <div class="feature-card"><h4>Editor tooling</h4><p>One Tumble Generator window with 20 presets, an Auto button
+            that fixes settings that fight each other, and generation on a background thread with a progress bar, Cancel
+            and a time limit. Watch the best solution play in 2D or with a real 3D cube.</p></div>
+          <div class="feature-card"><h4>A 3D demo</h4><p>Four game modes with endless puzzles and 44 ready-made levels,
+            with sounds and effects, all built in code. It works in URP, HDRP and the Built-in pipeline.</p></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 id="index-how">How it works</h2>
+        <div class="step"><div class="step-number">1</div><div class="step-content">
+          <h4>Configure</h4><p>Pick the board, the mode, the goal face and the gimmicks, in the Tumble Generator window or
+          with a <span class="k">TumbleSettings</span> object in code.</p></div></div>
+        <div class="step"><div class="step-number">2</div><div class="step-content">
+          <h4>Lay out</h4><p>Walls and holes are placed so the free tiles stay connected and keep the amount of turning
+          room you asked for. Then a few goals (or sets of targets) are tried.</p></div></div>
+        <div class="step"><div class="step-number">3</div><div class="step-content">
+          <h4>Solve and pick the start</h4><p>One search back from the win gives the exact par from every position on the
+          board. The start is picked from those, inside your par window and star band. Each gimmick then goes where it
+          lengthens the puzzle most and the start is picked again, preferring one every gimmick matters to. A gimmick
+          that still does nothing from that start is taken away, which never changes the par.</p></div></div>
+        <div class="step"><div class="step-number">4</div><div class="step-content">
+          <h4>Rate and check</h4><p>The finished puzzle is solved again from its start. It records the par, one best
+          solution, how many best solutions exist, whether the cube can get stuck, and the stars. A puzzle that misses
+          what you asked for is built again from the next seed.</p></div></div>
+        <div class="step"><div class="step-number">5</div><div class="step-content">
+          <h4>Use it</h4><p>Save it as an asset, export a picture of it, play it in the demo, or read the
+          <span class="k">TumbleData</span> in your own scripts.</p></div></div>
+      </div>
+
+      <div class="section">
+        <h2 id="index-verified">Why "verified"</h2>
+        <p>A rolling cube puzzle is easy to get wrong by hand. The cube can turn up the wrong way after a long walk, a key
+          can sit where no one would ever bother fetching it, and a one-way tile can trap the cube for good. Simple Tumble
+          proves the things you design around:</p>
+        <ul>
+          <li><strong>The par is real.</strong> It is the shortest solution that exists, so a 30-roll puzzle really takes
+            30 rolls.</li>
+          <li><strong>Every position is searched.</strong> The generator gives the solver room for every position the
+            board can hold, so its puzzles are always solved exactly and never cut short.</li>
+          <li><strong>Getting stuck is measured.</strong> One-way tiles and switches can strand the cube. Every puzzle
+            reports whether that can happen, and by default you only get puzzles where it can't.</li>
+          <li><strong>Gimmicks earn their place.</strong> Taking any gimmick away would change the puzzle. A key you
+            would never need, or an avoid tile off every best route, isn't left on the board.</li>
+          <li><strong>Misses are reported.</strong> When a star count, a par window or a gimmick that doesn't fit can't be
+            met, the puzzle's notes say what happened and what you got instead.</li>
+        </ul>
+        <div class="callout warning"><p><strong>One honest limit:</strong> a few heavy settings take a long time to build,
+          above all many targets in any order together with keys and switches, which can take a minute or more a board.
+          The window has a time limit (60 seconds by default) and keeps the closest board that finished, with a note.
+          Fewer targets, keys or switches, or a smaller board, build much faster.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="index-start">Getting started</h2>
+        <p>Open <strong>Window &gt; Living Failure &gt; Simple Tumble &gt; Tumble Generator</strong>, pick a preset, press
+          <strong>Generate</strong> and look at the analysis on the right. Then open the demo scene and play. The
+          <a href="#quick-start">Quick Start</a> walks through the whole loop in about five minutes.</p>
+      </div>
+
+
+      <div class="hero" id="quick-start">
+    <h1>Quick Start</h1>
+    <p class="tagline">From import to a puzzle you can play, in about five minutes.</p>
+      </div>
+
+
+      <div class="section">
+        <h2 id="quick-start-install">1. Install</h2>
+        <p>Import the package. Everything lives under <span class="k">Assets/SimpleTumble/</span>, and nothing is added to
+          your scenes until you ask for it.</p>
+        <p>The core (the generator, the solver, the play rules and the puzzle data) has no package dependencies. The demo
+          uses the <strong>Input System</strong> and <strong>Unity UI</strong> packages. It reads the mouse, touch and
+          keyboard through the Input System, so set <strong>Project Settings &gt; Player &gt; Active Input
+          Handling</strong> to <em>Input System Package</em> or <em>Both</em> before you play it.</p>
+        <div class="callout info"><p><strong>Render pipelines:</strong> URP is recommended, HDRP is supported and the
+          Built-in pipeline still works. The demo builds its materials from the active pipeline's default shader and keeps
+          that shader in your builds, and on HDRP it adds a small volume so it looks the same as on the others (turn off
+          <span class="k">HdrpLook</span> on the <span class="k">TumbleDemo</span> component to use your own lighting
+          instead). Simple Tumble was built and tested with Unity 6000.6.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="quick-start-generate">2. Generate a puzzle</h2>
+        <p>Open <strong>Window &gt; Living Failure &gt; Simple Tumble &gt; Tumble Generator</strong>. You can also get there
+          from <strong>Assets &gt; Create &gt; Simple Tumble &gt; Tumble Generator</strong>.</p>
+        <div class="step"><div class="step-number">1</div><div class="step-content">
+          <h4>Take a preset</h4><p>Press <strong>Presets</strong> and pick <em>Classic/Reach the goal</em>: a 6 x 6 board
+          where you roll the cube to the goal with the right face down. A preset replaces every setting with a ready-made
+          recipe.</p></div></div>
+        <div class="step"><div class="step-number">2</div><div class="step-content">
+          <h4>Generate</h4><p>Press <strong>Generate</strong>. Puzzles are built and solved on a background thread, so the
+          window stays responsive, and a long batch shows a progress bar with a Cancel button. Raise <strong>Batch
+          count</strong> to make up to 50 at a time.</p></div></div>
+        <div class="step"><div class="step-number">3</div><div class="step-content">
+          <h4>Try a few more</h4><p><em>Classic/Checkpoints</em> stamps 3 targets in their numbered order.
+          <em>Gimmicks/Keys and doors</em> adds 2 keys, each opening its own door. <em>Gimmicks/Portals</em> adds a portal
+          pair every best solution goes through, and <em>Shapes/Heart</em> cuts the board to a heart with 3 targets to
+          stamp.</p></div></div>
+        <div class="callout tip"><p>If you change settings by hand and they fight each other (more gimmicks than the
+          cube's progress can track, face locks with nothing to lock, or no turning room at all), the window warns you,
+          and <strong>Auto</strong> fixes them and tells you what it changed.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="quick-start-read">3. Read the analysis</h2>
+        <p>The pane on the right shows the selected puzzle. From the top:</p>
+        <ul>
+          <li><strong>The verdict:</strong> the par in rolls (and "one best solution" when there is just one) and the
+            difficulty out of 5, with a line that sums up the board and its seed. A warning shows when the cube can get
+            stuck.</li>
+          <li><strong>Board:</strong> a picture of the puzzle with a <strong>Roll</strong> slider above it that steps
+            through the best solution, and <strong>Play</strong> to watch it roll by roll. Keys go, gates flip, faces
+            press and tiles crumble as you drag it. Switch between <strong>2D</strong>, where you can hover a tile to read
+            it and zoom in, and <strong>3D</strong>, a real cube on a 3D board that you can turn and zoom.</li>
+          <li><strong>The cube, unfolded:</strong> beside the board, every face of the cube as it sits at that roll, what
+            has to be down to win, and a plain-words list of what is on this board.</li>
+          <li><strong>Export:</strong> save the puzzle as a PNG or SVG, as the colour view, a printable sheet or an answer
+            key.</li>
+          <li><strong>Best solution:</strong> every roll written out, with a <strong>Copy solution</strong> button.</li>
+          <li><strong>Facts</strong> and <strong>Generation report:</strong> the numbers (tiles, turning spots, gimmicks,
+            the plain walk, coverage and more) and every note the generator left.</li>
+        </ul>
+        <div class="callout tip"><p>Pressing Play in 3D is the quickest way to judge a puzzle. You can see the cube tip
+          over each roll and how far out of its way it has to go to turn the right face down.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="quick-start-save">4. Save it</h2>
+        <p>Press <strong>Save</strong> and choose:</p>
+        <ul>
+          <li><strong>Current</strong> saves the selected puzzle as a <span class="k">TumblePuzzleAsset</span>.</li>
+          <li><strong>Pack (all)</strong> saves every puzzle in the set as one ordered
+            <span class="k">TumblePuzzlePack</span>.</li>
+          <li><strong>Pack (on target only)</strong> leaves out the fallbacks, the puzzles that missed something their
+            settings asked for.</li>
+        </ul>
+        <p>Both asset types have inspectors with the same analysis pane, plus <strong>Verify</strong>, which solves the
+          puzzle again and refreshes its stored verdict, and <strong>Re-roll</strong>, which builds a new puzzle from the
+          same settings with a fresh seed. A pack can also re-roll just its fallbacks, and <strong>Export all</strong>
+          writes every puzzle and its answer key into a folder you pick.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="quick-start-play">5. Play the demo</h2>
+        <p>Open <span class="k">Assets/SimpleTumble/Scenes/SimpleTumbleDemo.unity</span> and press Play. The demo opens on
+          a welcome screen. Press <strong>Let's play</strong>, pick a mode, then choose <strong>Endless</strong> for a new
+          puzzle to your order or <strong>Level Pack</strong> for the ready-made levels.</p>
+        <p>The controls are also listed at the bottom of the screen while you play:</p>
+        <ul>
+          <li><strong>Arrow keys or WASD</strong> roll the cube, and so does a <strong>swipe</strong>. A
+            <strong>tap</strong> beside the cube rolls it toward the tap. Each key rolls the way that looks closest to it
+            on screen, so the controls stay right however the camera is turned.</li>
+          <li><strong>U</strong> (or Backspace, or Ctrl+Z) undoes a roll, <strong>R</strong> restarts and
+            <strong>H</strong> shows a hint.</li>
+          <li><strong>F</strong> lets the solver play the rest of the puzzle from where you are, and F or R stops it.</li>
+          <li><strong>[</strong> and <strong>]</strong> turn the camera, <strong>Home</strong> and <strong>End</strong>
+            tilt it, the mouse wheel or <strong>+</strong> and <strong>-</strong> zoom, and right-drag turns and tilts.
+            <strong>V</strong> resets the view.</li>
+          <li><strong>M</strong> mutes the sound and <strong>Esc</strong> goes back to the menu.</li>
+        </ul>
+        <p>The same actions are on the buttons at the bottom: Undo, Restart, Hint, Solve and Menu.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="quick-start-own">6. Use it in your game</h2>
+        <p>Make a puzzle in code, check what the solver found, and read the rest straight off the
+          <span class="k">TumbleData</span>:</p>
+<pre><code>using SimpleTumble;
+
+var settings = new TumbleSettings
+{
+    Width = 7, Height = 7,
+    Keys = 1,                    // a key that opens a door on the way
+    TargetDifficulty = 3,        // keep trying seeds until it rates 3 stars
+};
+TumbleData puzzle = TumbleGenerator.GenerateVerified(settings);
+Debug.Log($"Par {puzzle.Par} rolls, {puzzle.Difficulty} stars, solvable: {puzzle.Solvable}");</code></pre>
+        <p>To run your own game on it, keep a <span class="k">TumblePlay</span> and ask <span class="k">TumbleRules</span>
+          what each roll does. These are the same rules the solver used, so your game always agrees with the par:</p>
+<pre><code>TumblePlay play = TumbleRules.NewGame(puzzle);
+if (TumbleRules.TryRoll(puzzle, play, 1, out string reason))   // 0 north, 1 east, 2 south, 3 west
+{
+    if (TumbleRules.IsSolved(puzzle, play)) Debug.Log("Solved!");
+}
+else Debug.Log(reason);                                         // why not: a wall, a hole, a shut door...
+
+if (TumbleRules.Hint(puzzle, play, out int dir))
+    Debug.Log($"A best roll from here: {dir}. Face {Cube.FaceOn(play.Orientation, CubeSide.Bottom)} is down.");</code></pre>
+        <div class="callout info"><p>The core numbers tiles from the bottom left, row by row
+          (<span class="k">y * Width + x</span>), and names faces 0 to 5, so a refused roll's reason reads like "the door
+          at 23 needs key 0". The demo turns that into words for players, naming faces by their colour and shape.</p></div>
+        <p>Or let the demo's 3D view draw and play it for you. <span class="k">TumbleGame</span> adds a
+          <span class="k">TumbleBoardView</span> to the same object and builds the whole board from code:</p>
+<pre><code>using SimpleTumble.Demo;
+
+var game = new GameObject("Tumble").AddComponent&lt;TumbleGame&gt;();
+game.Begin(puzzle);
+game.View.FrameCamera(Camera.main);</code></pre>
+        <p>A saved puzzle works the same way: give your script a <span class="k">TumblePuzzleAsset</span> field and use its
+          <span class="k">Puzzle</span>, or a <span class="k">TumblePuzzlePack</span> and its
+          <span class="k">Get(index)</span>. See the <a href="#api-reference">API Reference</a> for the rest.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="quick-start-next">Where to next</h2>
+        <ul>
+          <li><a href="#generating">Generating</a> explains every setting and what it does.</li>
+          <li><a href="#demos">Demos</a> shows how the demo scene is put together and how to change it.</li>
+          <li><a href="#troubleshooting">Troubleshooting</a> covers notes, fallbacks and limits.</li>
+        </ul>
+      </div>
+
+
+      <div class="hero" id="generating">
+    <h1>Generating Puzzles</h1>
+    <p class="tagline">Every setting, what it does, and how the generator decides.</p>
+      </div>
+
+
+      <div class="section">
+        <h2 id="generating-window">The Tumble Generator window</h2>
+        <p>Open <strong>Window &gt; Living Failure &gt; Simple Tumble &gt; Tumble Generator</strong>. The settings are on
+          the left in five sections (Board, Goal, Gimmicks, Trim and Quality), with <strong>Auto</strong>,
+          <strong>Presets</strong> and <strong>Reset</strong> above them and the seed, batch and <strong>Generate</strong>
+          controls below. The puzzles you've made are on the right, one at a time with the analysis pane, and the arrows
+          page through them.</p>
+        <p>Every puzzle the window makes goes through <strong>verified generation</strong>: if a board misses what you
+          asked for, the generator builds another from the next seed, and if none of its tries succeed it gives you the
+          closest one with a note saying why. Generation runs on a background thread with a progress bar that says which
+          board it is on and what it is doing, and a <strong>Cancel</strong> button that stops it within a fraction of a
+          second. Your settings and the unsaved puzzles survive a recompile.</p>
+        <p>Each table below gives the label in the window, the matching field on <span class="k">TumbleSettings</span> for
+          code, its range and its default. Values outside the range are clamped, so code can pass anything.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-board">Board</h2>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>Outline</td><td><code>Outline</code></td><td>Full, Cross, Ring, Diamond, Circle, Heart, L, T, U, Custom
+            (Full)</td><td>The board's shape. Tiles outside the outline aren't there at all. A shape needs a loop the cube
+            can roll round to turn its faces (an open 2 x 2 square, or a big enough ring), or it holds no puzzle and the
+            generator says so in a note.</td></tr>
+          <tr><td>Rows</td><td><code>CustomShape</code></td><td>up to 24 x 24</td><td>Custom outline only: one line per
+            row, top row first, <code>#</code> for a tile and <code>.</code> for no tile. The rows set the board's size,
+            and the window tells you when they don't make a board yet.</td></tr>
+          <tr><td>Width, Height</td><td><code>Width</code>, <code>Height</code></td><td>2 to 24 (6 x 6)</td><td>The board
+            in tiles. A one-goal puzzle uses about 17 tiles whatever the size (measured), so bigger boards suit more
+            gimmicks, more targets or Trim.</td></tr>
+          <tr><td>Obstacles</td><td><code>Obstacles</code></td><td>0 to 0.45 (0.28)</td><td>The share of the board taken by
+            walls and holes. The free tiles always stay connected.</td></tr>
+          <tr><td>Hole share</td><td><code>HoleShare</code></td><td>0 to 1 (0.3)</td><td>The share of the obstacles that
+            are holes, with the rest walls. Both block the cube the same way, and only the look differs.</td></tr>
+          <tr><td>Turning room</td><td><code>TurningRoom</code></td><td>0 to 0.5 (0.12)</td><td>The share of the board's
+            turning spots the layout keeps. A turning spot is an open 2 x 2 square, where the cube can roll round on the
+            spot to change which face is down. Less room means the cube has to go further out of its way to turn, which is
+            harder. The sweet spot is 0.02 to 0.15, and 0 can leave the cube unable to turn at all.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-goal">Goal</h2>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>Mode</td><td><code>Mode</code></td><td>Reach Goal, Stamp All (Reach Goal)</td><td><strong>Reach
+            Goal</strong>: roll onto the goal with the goal face down. <strong>Stamp All</strong>: land with the goal face
+            down on every target tile to stamp it.</td></tr>
+          <tr><td>Goal face</td><td><code>GoalFace</code></td><td>Random, or face 0 to 5 (Random, which is -1)</td><td>The
+            face that must be down on the goal, or pressed onto every target. Each face is a colour and a shape: 0 is the
+            red dot, 1 the blue square, 2 the yellow triangle, 3 the green diamond, 4 the purple star and 5 the orange
+            hexagon. Opposite faces add up to 5. Random picks one for each puzzle.</td></tr>
+          <tr><td>Targets</td><td><code>Targets</code></td><td>1 to 8 (4)</td><td>Stamp All only: the target tiles, spread
+            out, each as far as it gets from the others.</td></tr>
+          <tr><td>In order</td><td><code>Ordered</code></td><td>on or off (off)</td><td>Stamp All only: the targets are
+            numbered checkpoints, stamped in their order. The generator gives them the order that makes the longest puzzle
+            (trying every order up to 5 targets, and searching past that).</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-gimmicks">Gimmicks</h2>
+        <p>Every gimmick works in both modes. Each one is placed where it lengthens the puzzle most, and the solver proves it
+          together with the rest of the board.</p>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>Keys and doors</td><td><code>Keys</code></td><td>0 to 4 (0)</td><td>Each key opens its own door, a tile
+            the cube can't roll onto until it has rolled onto the key. The door sits on the best solutions and its key far
+            from it.</td></tr>
+          <tr><td>Switches</td><td><code>Switches</code></td><td>0 to 4 (0)</td><td>Rolling onto a switch flips its gates,
+            open to shut or shut to open, every time.</td></tr>
+          <tr><td>Gates per switch</td><td><code>GatesPerSwitch</code></td><td>1 to 3 (1)</td><td>The first gate starts
+            shut on the best solutions. Each one after it goes where it lengthens the puzzle most, starting shut or
+            open.</td></tr>
+          <tr><td>Face locks</td><td><code>FaceLocks</code></td><td>on or off (off)</td><td>Needs keys or switches. A
+            locked key is only taken, and a locked switch only pressed, when one face lands on it. Each gets the face that
+            lengthens the puzzle most, and only where that makes a difference, so the rest answer any face.</td></tr>
+          <tr><td>Avoid tiles</td><td><code>Avoid</code></td><td>0 to 16 (0)</td><td>Tiles one face must never be down
+            on.</td></tr>
+          <tr><td>One-way tiles</td><td><code>OneWays</code></td><td>0 to 16 (0)</td><td>Tiles the cube may only cross in
+            their arrow's direction, onto them and off them.</td></tr>
+          <tr><td>Multi-face tiles</td><td><code>MultiFaces</code></td><td>0 to 4 (0)</td><td>Each needs several faces
+            pressed onto it (landing on it with that face down), in any order, before the puzzle can be won. They are a lot
+            of turning work, so puzzles with one rarely rate below 3 stars.</td></tr>
+          <tr><td>Faces per tile</td><td><code>FacesPerTile</code></td><td>2 to 3 (2)</td><td>How many faces each
+            multi-face tile needs.</td></tr>
+          <tr><td>Turntables</td><td><code>Turntables</code></td><td>0 to 4 (0)</td><td>Rolling onto a turntable turns the
+            cube a quarter turn on the spot. A turntable is a free turn, so it is placed as a tool the puzzle needs: the
+            start is picked where every turntable is needed (without one, there's no win or a longer one), on a corridor
+            tile. Boards with little turning room need them most.</td></tr>
+          <tr><td>Crumbling tiles</td><td><code>Crumbling</code></td><td>0 to 4 (0)</td><td>Each holds the cube once and
+            breaks when it rolls off, leaving a hole. Like turntables they go in last, at a start where every one makes the
+            par longer. Boards with little turning room gain the most: 2 to 5 rolls a tile when reaching the goal and 8 to 12
+            when stamping targets (measured).</td></tr>
+          <tr><td>Portal pairs</td><td><code>Portals</code></td><td>0 to 2 (0)</td><td>Rolling onto one tile of a pair, the
+            cube comes out of the other still rolling, one more tile the same way. They go in last as forced tools: every
+            best solution goes through every pair, and the par is longer than with those tiles plain floor.</td></tr>
+        </table>
+        <div class="callout info"><p><strong>The cube's progress fits in 10 bits.</strong> Every target to stamp, key,
+          switch, face a multi-face tile needs and crumbling tile takes one, and the window shows the total under the
+          gimmicks. Avoid tiles, one-way tiles, turntables and portals take none. Auto trims a request that asks for more
+          than 10. A board with no room for a gimmick you asked for gets fewer, and its note says so.</p></div>
+        <div class="callout tip"><p><strong>Every gimmick matters.</strong> After placing, each gimmick is tried taken away
+          and the par compared. The start is picked again where the most of them change the puzzle, and one that still
+          makes no difference is taken away (the par never changes when it is). A gimmick is only left in place when
+          taking it away would let the cube get stuck, and then the note says so.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-trim">Trim</h2>
+        <p>A one-goal puzzle uses about 17 tiles however big the board is, so on a big board most of it is scenery. Trim cuts
+          the tiles far from the solution away and crops the board, so a big board becomes a compact shape round its
+          puzzle.</p>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>Trim</td><td><code>Trim</code></td><td>Off, Loose, Tight (Off)</td><td><strong>Off</strong> keeps the
+            whole board. <strong>Loose</strong> keeps every tile on any best solution, so the par, the number of best
+            solutions and the stars don't change. <strong>Tight</strong> keeps the tiles of one best solution: the par
+            doesn't change, there are fewer best solutions, and the stars are rated again.</td></tr>
+          <tr><td>Margin</td><td><code>TrimMargin</code></td><td>0 to 3 (1)</td><td>Tiles kept round the solution. With
+            Tight, 0 leaves only the answer's own tiles, so the board gives the answer away.</td></tr>
+        </table>
+        <p>Measured on 12 x 12 boards (40 puzzles), a tight trim with margin 1 takes the average number of best solutions
+          from 6.7 to 4.3, and puzzles with a single best solution from 3 to 6 of the 40. Margin 0 gets 23 of the 40 down to
+          one, but at the price of a board shaped like its answer. With <strong>No soft locks</strong> on, a trim that
+          would let the cube get stuck widens its margin, or the board is kept whole, with a note.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-quality">Quality</h2>
+        <table>
+          <tr><th>Setting</th><th>Field</th><th>Range</th><th>What it does</th></tr>
+          <tr><td>No soft locks</td><td><code>NoSoftLocks</code></td><td>on or off (on)</td><td>Only keep puzzles where the
+            cube can never reach a position it can't win from. Only one-way tiles and switches can cause one (a press can
+            shut a gate behind the cube). Every puzzle reports it in <span class="k">CanGetStuck</span> either
+            way.</td></tr>
+          <tr><td>Target stars</td><td><code>TargetDifficulty</code></td><td>0 to 5 (0)</td><td>0 means any, and gives the
+            hardest start the board has. 1 to 5 picks a start inside that star band, and tries more boards until one rates
+            exactly that. Every gimmick you ask for wins over the stars: a target they can't go down to comes back as the
+            closest puzzle, with a note.</td></tr>
+          <tr><td>Par window</td><td><code>MinPar</code>, <code>MaxPar</code></td><td>1 to 400 (4, and 0)</td><td>A puzzle
+            needs at least MinPar rolls, and at most MaxPar, where 0 means no upper limit.</td></tr>
+          <tr><td>Min coverage</td><td><code>MinCoverage</code></td><td>0 to 0.9 (0)</td><td>The best solution must roll
+            over at least this share of the board's tiles.</td></tr>
+          <tr><td>Goal tries</td><td><code>GoalTries</code></td><td>1 to 32 (6)</td><td>Under Advanced: goals (or sets of
+            targets) tried on each board. The best puzzle among them is kept.</td></tr>
+          <tr><td>Max attempts</td><td><code>MaxAttempts</code></td><td>1 to 500 (40)</td><td>Under Advanced: boards tried
+            for each puzzle before falling back to the closest one.</td></tr>
+          <tr><td>State budget</td><td><code>StateBudget</code></td><td>1,000 to 5,000,000 (500,000)</td><td>Under
+            Advanced: the positions the solver may explore. The generator never uses less than every position the board can
+            hold, so its puzzles are always solved exactly. The budget matters for hints and for solving puzzles you made
+            by hand.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-stars">How the stars work</h2>
+        <p>Every proven puzzle gets a 1 to 5 star difficulty, or 0 when it isn't proven solvable. The score is the par plus
+          2 for every roll spent turning beyond the plain walk, where the plain walk is the shortest route to the goal with
+          any face down (or the shortest tour over the targets). Walking is easy, and the extra rolls you spend getting the
+          right face down are the part you have to plan, so they count three times.</p>
+        <table>
+          <tr><th>Stars</th><th>Reach the goal (score)</th></tr>
+          <tr><td>1</td><td>up to 26</td></tr>
+          <tr><td>2</td><td>27 to 32</td></tr>
+          <tr><td>3</td><td>33 to 40</td></tr>
+          <tr><td>4</td><td>41 to 51</td></tr>
+          <tr><td>5</td><td>52 and up</td></tr>
+        </table>
+        <p>The bands were measured over 600 everyday boards (sizes 5 to 14, obstacles 15 to 40%, turning room 2 to 30%),
+          so each star covers about a fifth of them. Stamping more targets makes longer puzzles, so Stamp All has its own
+          bands for each target count:</p>
+        <table>
+          <tr><th>Targets</th><th>1 star</th><th>2 stars</th><th>3 stars</th><th>4 stars</th><th>5 stars</th></tr>
+          <tr><td>1</td><td>up to 26</td><td>to 32</td><td>to 40</td><td>to 51</td><td>above</td></tr>
+          <tr><td>2</td><td>up to 50</td><td>to 59</td><td>to 71</td><td>to 87</td><td>above</td></tr>
+          <tr><td>3</td><td>up to 63</td><td>to 73</td><td>to 87</td><td>to 108</td><td>above</td></tr>
+          <tr><td>4</td><td>up to 73</td><td>to 86</td><td>to 101</td><td>to 126</td><td>above</td></tr>
+          <tr><td>5</td><td>up to 81</td><td>to 95</td><td>to 112</td><td>to 139</td><td>above</td></tr>
+          <tr><td>6</td><td>up to 89</td><td>to 106</td><td>to 124</td><td>to 154</td><td>above</td></tr>
+          <tr><td>7</td><td>up to 98</td><td>to 115</td><td>to 135</td><td>to 165</td><td>above</td></tr>
+          <tr><td>8</td><td>up to 107</td><td>to 125</td><td>to 147</td><td>to 182</td><td>above</td></tr>
+        </table>
+        <p>Stars are one scale for every puzzle. A key fetched, a switch pressed or a face stamped on a multi-face tile all
+          count as rolls, so a puzzle with gimmicks honestly rates harder. Asking for 1 to 5 stars hits nearly always with a
+          single key, switch, avoid or one-way tile, face lock, turntable, crumbling tile or portal pair. Multi-face tiles
+          rarely go below 3 stars, and neither do heavy mixes of gimmicks. Without a target, most puzzles with gimmicks rate
+          5 stars, because the hardest start is picked.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-auto">Auto and presets</h2>
+        <p><strong>Auto</strong> fixes settings that fight each other and tells you what it changed. The window also shows
+          what Auto would change, live, as a warning under the settings. In code it is
+          <span class="k">TumblePresets.Tune</span>. It:</p>
+        <ul>
+          <li>cuts crumbling tiles, then multi-face tiles, then switches, then keys until the cube's progress fits in 10
+            bits;</li>
+          <li>turns Face locks off when there are no keys or switches to lock;</li>
+          <li>raises Turning room to 0.02 when it is lower, since with none the cube may have nowhere to turn;</li>
+          <li>raises a tight trim's Margin to 1 when it is 0, since that board gives the answer away;</li>
+          <li>sets the outline back to Full when custom rows don't make a board;</li>
+          <li>raises Target stars to what the keys and switches can go down to: with all of them in, 2 never rated below 3
+            stars when reaching the goal, and 3 or more never below 5 (or 4 when stamping targets), measured;</li>
+          <li>raises Target stars to 3 with a multi-face tile, which rarely rates lower.</li>
+        </ul>
+        <p><strong>Presets</strong> replace every setting with a ready-made recipe. In code they are
+          <span class="k">TumblePresets.All</span>, and each one's <span class="k">Make()</span> gives a fresh
+          <span class="k">TumbleSettings</span>. Each was built 5 times for this page, and every one of the 100 puzzles got
+          everything its recipe asked for.</p>
+        <table>
+          <tr><th>Preset</th><th>What you get</th></tr>
+          <tr><td>Classic/Reach the goal</td><td>6 x 6: roll the cube to the goal with the right face down.</td></tr>
+          <tr><td>Classic/First puzzle</td><td>5 x 5, aiming for 1 star: a first level.</td></tr>
+          <tr><td>Classic/Stamp the targets</td><td>8 x 8: press the face on 4 targets, in any order.</td></tr>
+          <tr><td>Classic/Checkpoints</td><td>8 x 8: stamp 3 targets in their numbered order.</td></tr>
+          <tr><td>Difficulty/Easy</td><td>6 x 6 aiming for 2 stars.</td></tr>
+          <tr><td>Difficulty/Hard</td><td>7 x 7 with little turning room, aiming for 5 stars.</td></tr>
+          <tr><td>Difficulty/Big board, trimmed</td><td>12 x 12 trimmed tight round one best solution: a compact shape with
+            fewer ways to do it best.</td></tr>
+          <tr><td>Gimmicks/Keys and doors</td><td>7 x 7 with 2 keys, each opening its own door.</td></tr>
+          <tr><td>Gimmicks/Switches and gates</td><td>7 x 7 with 2 switches, 2 gates each.</td></tr>
+          <tr><td>Gimmicks/Face locks</td><td>7 x 7 with a key and a switch that only answer one face.</td></tr>
+          <tr><td>Gimmicks/Avoid tiles</td><td>7 x 7 with 4 tiles one face must never be down on.</td></tr>
+          <tr><td>Gimmicks/One-way tiles</td><td>7 x 7 with 2 arrows, and no way to get stuck.</td></tr>
+          <tr><td>Gimmicks/Multi-face tile</td><td>7 x 7 with one tile that needs 2 faces pressed on it.</td></tr>
+          <tr><td>Gimmicks/Turntables</td><td>7 x 7 with little turning room and 2 turntables the puzzle needs.</td></tr>
+          <tr><td>Gimmicks/Crumbling tiles</td><td>8 x 8 with little turning room and 2 tiles that break once the cube rolls
+            off.</td></tr>
+          <tr><td>Gimmicks/Portals</td><td>8 x 8 with a portal pair every best solution goes through.</td></tr>
+          <tr><td>Gimmicks/Everything</td><td>8 x 8: a key, a switch, an avoid tile, a one-way tile, a turntable, a crumbling
+            tile and a portal pair.</td></tr>
+          <tr><td>Shapes/Ring</td><td>9 x 9 cut to a square ring: the cube turns by going round it.</td></tr>
+          <tr><td>Shapes/Cross</td><td>9 x 9 cut to a fat plus.</td></tr>
+          <tr><td>Shapes/Heart</td><td>10 x 10 cut to a heart, with 3 targets to stamp.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-seeds">Seeds, batches and saving</h2>
+        <p>The same settings and the same seed always give the same puzzle. In the window, <strong>Random</strong> uses a
+          fresh seed for every Generate and shows the one it used. Turn Random off to type a seed and keep it, and
+          <strong>Copy</strong> copies it. Each puzzle in a batch gets its own seed, the batch's seed followed by a dash and
+          the puzzle's number (<code>-0</code>, <code>-1</code> and so on), and every puzzle stores its own seed, which the
+          analysis pane can copy.</p>
+        <p>Verified generation tries the seed itself first, then the same seed with <code>#1</code>, <code>#2</code> and so
+          on added, until a puzzle meets the request. A puzzle's stored seed is the one that worked, such as
+          <code>level-7-5#1</code>, so with the same settings it always rebuilds that exact puzzle.</p>
+        <p><strong>Batch count</strong> makes 1 to 50 puzzles per click and adds them to the set.
+          <strong>Clear on generate</strong> empties the set first, so each click replaces the batch.
+          <strong>Time limit</strong> (0 to 600 seconds, 60 by default, 0 for none) is how long one puzzle may take: past
+          it, generation keeps the closest board that finished, with a note, and if no board finished, that puzzle is
+          listed as not made and the batch carries on. The limit is shared with the inspectors' Re-roll.</p>
+        <p><strong>Only on target</strong> hides the fallbacks, and the cross removes a puzzle from the set.
+          <strong>Save</strong> then writes <em>Current</em> as a <span class="k">TumblePuzzleAsset</span>, or <em>Pack
+          (all)</em> or <em>Pack (on target only)</em> as a <span class="k">TumblePuzzlePack</span>, using the name in
+          <strong>Save name</strong> as the suggestion.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-honesty">Limits and notes</h2>
+        <p>The generator never quietly gives you less than you asked for. Whenever something didn't go to plan, the puzzle's
+          <span class="k">Notes</span> say what happened, and the analysis pane shows every one. Each note starts with what
+          it is about:</p>
+        <ul>
+          <li><strong>Target difficulty</strong> and <strong>Difficulty:</strong> no puzzle in the attempts had the stars
+            you asked for. You got the closest, with a hint which way to change the settings. A tight trim can also move a
+            puzzle off its star target, and the note says so.</li>
+          <li><strong>Verified:</strong> no puzzle in the attempts was solvable inside your par window, coverage and soft
+            lock rule, or none had room for every gimmick you asked for.</li>
+          <li><strong>Keys, Switches, Avoid, One-ways, Multi-face tiles, Turntables, Crumbling tiles, Portals and
+            Targets:</strong> the board only had room for some of them, and the note says how many and why.</li>
+          <li><strong>Gimmicks:</strong> some gimmick made no difference from the best start and was taken away, or stays
+            because taking it away would let the cube get stuck.</li>
+          <li><strong>Par:</strong> the board's longest puzzle was shorter than your minimum, or no start fitted under your
+            maximum.</li>
+          <li><strong>Trim:</strong> the margin was widened, or the board kept whole, so the cube can't get stuck, or a key
+            or switch off the kept solution went with the cut tiles.</li>
+          <li><strong>Shape</strong>, <strong>Obstacles</strong> and <strong>Start:</strong> the outline or custom rows left
+            too few tiles, there wasn't room for every obstacle, or no position on the board can win at all.</li>
+          <li><strong>Time limit:</strong> generation stopped at the time limit, and this is the closest of the boards that
+            finished.</li>
+          <li><strong>Solver:</strong> the state budget ran out before the search finished, which only happens when your own
+            code calls the solver with a budget smaller than the board (the generator, Verify and hints never do), or there are more than 1,000,000,000 best solutions and the count stops
+            there.</li>
+        </ul>
+        <p>Use <span class="k">TumbleAudit.MeetsRequest(puzzle)</span> to check whether a puzzle got everything its
+          settings asked for, and <span class="k">TumbleAudit.Missing(puzzle)</span> to list what it missed. A pack's
+          inspector can re-roll every puzzle in the pack that missed something (<strong>Re-roll &gt;
+          Fallbacks</strong>).</p>
+      </div>
+
+      <div class="section">
+        <h2 id="generating-code">Generating from code</h2>
+        <p>Everything the window does is available from code through <span class="k">TumbleGenerator</span>. Your settings
+          object is copied and clamped first, so it is never changed.</p>
+<pre><code>using SimpleTumble;
+
+var s = new TumbleSettings
+{
+    Width = 8, Height = 8,
+    Mode = TumbleMode.StampAll,
+    Targets = 3,
+    Ordered = true,               // numbered checkpoints, stamped in order
+    TargetDifficulty = 4,
+    Seed = "level-7",             // empty = a fresh random seed
+};
+
+TumbleData one = TumbleGenerator.Generate(s);            // one puzzle from this exact seed, solved and rated
+TumbleData good = TumbleGenerator.GenerateVerified(s);   // tries seeds until the puzzle meets the request
+List&lt;TumbleData&gt; pack = TumbleGenerator.GenerateBatch(s, 10);   // seeds level-7-0 to level-7-9, each verified</code></pre>
+        <p><span class="k">Generate</span>, <span class="k">GenerateVerified</span> and <span class="k">GenerateBatch</span>
+          each have an <span class="k">Async</span> version that runs on a background thread and takes a
+          <span class="k">CancellationToken</span>. In Unity, <span class="k">await</span> carries on on the main thread
+          afterwards. <span class="k">GenerateBatchAsync</span> also reports progress:</p>
+<pre><code>var progress = new Progress&lt;int&gt;(n =&gt; Debug.Log($"{n} of 10 done"));
+List&lt;TumbleData&gt; puzzles = await TumbleGenerator.GenerateBatchAsync(s, 10, progress, cancel.Token);</code></pre>
+        <p>For a time limit and a running report of what a board is doing, use
+          <span class="k">GenerateVerified(settings, cancel, progress, timeLimitSeconds)</span>, which the window uses. See
+          the <a href="#api-reference">API Reference</a>.</p>
+        <div class="callout tip"><p><strong>How long it takes</strong> (measured on a desktop, 5 builds of each preset; a
+          phone is slower): plain boards take 2 to 30 milliseconds, boards with keys, switches, turntables or crumbling
+          tiles 20 to 300, portals about 80, and the Everything preset 0.3 to 0.7 seconds. The slow case is many targets in
+          any order together with keys and switches, which can take from several seconds to over a minute a board. In a
+          game, generate with the Async versions (the demo does) or ahead of time in the editor as a pack.</p></div>
+      </div>
+
+
+      <div class="hero" id="api-reference">
+    <h1>API Reference</h1>
+    <p class="tagline">The public types, what each member does, and how they fit together.</p>
+      </div>
+
+
+      <div class="section">
+        <h2 id="api-reference-layout">Assemblies and numbers</h2>
+        <table>
+          <tr><th>Assembly</th><th>What it holds</th></tr>
+          <tr><td><code>SimpleTumble</code></td><td>The core: the generator, the solver, the play rules, the puzzle data,
+            the pictures and the ScriptableObjects. It references no packages, and everything except the asset types is
+            plain C# that also runs outside Unity.</td></tr>
+          <tr><td><code>SimpleTumble.Demo</code></td><td>The 3D demo: the board, the game, the HUD, the hub, sounds and
+            effects. It uses the Input System and Unity UI packages, and HDRP when that package is installed.</td></tr>
+          <tr><td><code>SimpleTumble.Editor</code></td><td>The Tumble Generator window, the inspectors, the documentation
+            menu and the build step that keeps the demo's shader. Editor only.</td></tr>
+        </table>
+        <p>Everything below is in the <span class="k">SimpleTumble</span> namespace unless it says
+          <span class="k">SimpleTumble.Demo</span>. The core uses plain numbers throughout:</p>
+        <ul>
+          <li><strong>Cells</strong> are numbered <code>y * Width + x</code>, with row 0 at the bottom, so cell 0 is the
+            bottom left corner.</li>
+          <li><strong>Directions</strong> are 0 North (y + 1), 1 East (x + 1), 2 South and 3 West. The opposite of
+            <code>dir</code> is <code>(dir + 2) % 4</code>.</li>
+          <li><strong>Faces</strong> are 0 to 5, and face <code>f</code> is opposite face <code>5 - f</code>. The core gives
+            them no look. The asset's own pictures and demo show them as a red dot, a blue square, a yellow triangle, a green
+            diamond, a purple star and an orange hexagon.</li>
+          <li><strong>Orientations</strong> are the 24 ways the cube can sit, 0 to 23. <span class="k">Cube</span> turns
+            them into faces and back.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-generator">TumbleGenerator</h2>
+        <p>The entry point. Every method copies and clamps the settings first, so your object is never changed, and the
+          same settings with the same seed always give the same puzzle. A null settings object means the defaults, and an
+          empty seed means a fresh random one.</p>
+        <table>
+          <tr><th>Method</th><th>What it does</th></tr>
+          <tr><td><code>TumbleData Generate(TumbleSettings settings)</code></td><td>One puzzle from this exact seed, solved
+            and rated.</td></tr>
+          <tr><td><code>TumbleData GenerateVerified(TumbleSettings settings, CancellationToken cancel = default)</code></td>
+            <td>Tries the seed, then the seed with <code>#1</code>, <code>#2</code> and so on, up to
+            <code>MaxAttempts</code>, until a puzzle is sound (solvable, inside the par window and the coverage, and with no
+            way to get stuck when <code>NoSoftLocks</code> is on), has every gimmick it asked for, and is rated
+            <code>TargetDifficulty</code> stars (0 means any). On a miss it returns the closest puzzle with a note. If it is
+            cancelled before the first puzzle, it throws <code>OperationCanceledException</code>.</td></tr>
+          <tr><td><code>TumbleData GenerateVerified(TumbleSettings settings, CancellationToken cancel, IProgress&lt;TumbleProgress&gt; progress, double timeLimitSeconds = 0)</code></td>
+            <td>The same with progress and a time limit. The progress hears about 10 times a second which board it is on
+            and what that board is doing. A cancel stops it within a fraction of a second, even in the middle of a board.
+            Past the time limit (0 means none) it returns the closest puzzle of the boards that finished, with a note. When
+            no board finished in time it throws <code>TimeoutException</code>, saying what the first board was still
+            doing.</td></tr>
+          <tr><td><code>List&lt;TumbleData&gt; GenerateBatch(TumbleSettings settings, int count, CancellationToken cancel = default)</code></td>
+            <td>A pack of verified puzzles with seeds <code>root-0</code>, <code>root-1</code> and so on.</td></tr>
+          <tr><td><code>Task&lt;TumbleData&gt; GenerateAsync(...)</code>, <code>GenerateVerifiedAsync(...)</code></td><td>The
+            same on a background thread.</td></tr>
+          <tr><td><code>Task&lt;List&lt;TumbleData&gt;&gt; GenerateBatchAsync(TumbleSettings settings, int count, IProgress&lt;int&gt; progress = null, CancellationToken cancel = default)</code></td>
+            <td>A batch on a background thread, reporting how many are done (1 to count).</td></tr>
+          <tr><td><code>bool IsSound(TumbleData m, TumbleSettings s)</code></td><td>The hard requirements verified generation
+            uses: solvable, the par inside the window, the coverage, and no way to get stuck when asked.</td></tr>
+          <tr><td><code>int Shortfall(TumbleData m, TumbleSettings s)</code></td><td>How many of the targets, keys,
+            switches, avoid, one-way, multi-face, turntable and crumbling tiles and portal pairs asked for the puzzle is
+            missing. 0 means every one is there.</td></tr>
+        </table>
+        <p><span class="k">TumbleProgress</span> holds <code>Attempt</code> and <code>Attempts</code> (the board being tried,
+          from 1, and how many may be tried), <code>Stage</code> in plain words ("placing keys and doors", "solving and rating"),
+          <code>Seconds</code> since the puzzle started and <code>Limit</code>. Its <code>ToString()</code> reads "board 2 of
+          40: solving and rating (1.3 s)".</p>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-settings">TumbleSettings and enums</h2>
+        <p><span class="k">TumbleSettings</span> holds every input to the generator. Each field, its range and what it
+          does is on the <a href="#generating">Generating</a> page. It also has:</p>
+        <table>
+          <tr><th>Member</th><th>What it does</th></tr>
+          <tr><td><code>TumbleSettings Clamp()</code></td><td>Puts every field into its valid range, in place, and returns
+            the same object.</td></tr>
+          <tr><td><code>TumbleSettings Clone()</code></td><td>A copy. The custom outline's rows are copied too, so the two
+            never share them.</td></tr>
+        </table>
+        <table>
+          <tr><th>Enum</th><th>Values</th></tr>
+          <tr><td><code>TumbleMode</code></td><td><code>ReachGoal</code> (the goal face down on the goal) and
+            <code>StampAll</code> (the goal face pressed on every target)</td></tr>
+          <tr><td><code>BoardOutline</code></td><td><code>Full</code>, <code>Cross</code>, <code>Ring</code>,
+            <code>Diamond</code>, <code>Circle</code>, <code>Heart</code>, <code>L</code>, <code>T</code>, <code>U</code>
+            and <code>Custom</code> (your own rows of text)</td></tr>
+          <tr><td><code>TrimMode</code></td><td><code>Off</code>, <code>Loose</code> (keep every best solution) and
+            <code>Tight</code> (keep one)</td></tr>
+          <tr><td><code>RollBlock</code></td><td>Why a roll isn't allowed: <code>None</code> (it is), <code>Edge</code>,
+            <code>Wall</code>, <code>Hole</code>, <code>Avoid</code>, <code>OneWay</code>, <code>Door</code>,
+            <code>Gate</code>, <code>Crumbled</code> and <code>Portal</code> (the tile past the portal's twin won't take the
+            cube)</td></tr>
+          <tr><td><code>CubeSide</code></td><td><code>North</code>, <code>East</code>, <code>South</code>,
+            <code>West</code> (the same numbers as the directions), <code>Top</code> and <code>Bottom</code></td></tr>
+          <tr><td><code>ExportStyle</code></td><td><code>AsShown</code>, <code>Printable</code> and
+            <code>AnswerKey</code></td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-data">TumbleData</h2>
+        <p>One puzzle, plain and serializable. The generator fills in the board and the verdict, and you can build one by
+          hand too (see <a href="#api-reference-byhand">A puzzle by hand</a>).</p>
+        <table>
+          <tr><th>Member</th><th>What it is</th></tr>
+          <tr><td><code>int Width, Height</code></td><td>The board's size in cells.</td></tr>
+          <tr><td><code>List&lt;int&gt; Walls</code>, <code>Holes</code>, <code>Outside</code></td><td>Raised blocks, gaps in
+            the floor, and cells the outline cut away. The cube can't roll onto any of them.
+            <code>BoardOutline Outline</code> is the outline the board was cut to.</td></tr>
+          <tr><td><code>TumbleMode Mode</code></td><td>ReachGoal or StampAll.</td></tr>
+          <tr><td><code>int Start</code>, <code>int StartOrientation</code></td><td>The cube's starting cell and how it sits
+            there.</td></tr>
+          <tr><td><code>int Goal</code>, <code>int GoalFace</code></td><td>The goal cell (-1 in StampAll), and the face that
+            has to be down on it, or pressed on every target.</td></tr>
+          <tr><td><code>List&lt;int&gt; Targets</code>, <code>bool Ordered</code></td><td>StampAll's target tiles, 1 to 8 of
+            them, and whether they have to be stamped in list order.</td></tr>
+          <tr><td><code>List&lt;AvoidTile&gt; Avoid</code></td><td>Tiles with a <code>Face</code> that must never be down on
+            them.</td></tr>
+          <tr><td><code>List&lt;OneWayTile&gt; OneWays</code></td><td>Tiles crossed only in their arrow's
+            <code>Dir</code>.</td></tr>
+          <tr><td><code>List&lt;int&gt; Keys</code>, <code>List&lt;int&gt; KeyFaces</code>,
+            <code>List&lt;DoorTile&gt; Doors</code></td><td><code>Keys[k]</code> is the tile holding key k. <code>KeyFaces</code>
+            is empty, or holds one face per key that has to land on it (-1 for any face). Each door names the
+            <code>Key</code> that opens it.</td></tr>
+          <tr><td><code>List&lt;SwitchTile&gt; Switches</code>, <code>List&lt;GateTile&gt; Gates</code></td><td>One switch per
+            <code>Channel</code>, with a <code>Face</code> (-1 for any). Each gate has a <code>Channel</code> and
+            <code>StartsOpen</code>, and every press of its switch flips it.</td></tr>
+          <tr><td><code>List&lt;MultiFaceTile&gt; MultiFaces</code></td><td>Tiles that need 1 to 3 faces pressed on them
+            before the puzzle can be won. <code>Faces</code> is a mask (bit f is face f), and <code>Needs(face)</code> reads
+            it.</td></tr>
+          <tr><td><code>List&lt;TurntableTile&gt; Turntables</code></td><td>Tiles that turn the cube a quarter turn in place,
+            <code>Clockwise</code> or not, every time it rolls onto them.</td></tr>
+          <tr><td><code>List&lt;int&gt; Crumbling</code></td><td>Tiles that break once the cube rolls off them.</td></tr>
+          <tr><td><code>List&lt;PortalPair&gt; Portals</code></td><td>Pairs of tiles <code>A</code> and <code>B</code>.
+            Rolling onto one, the cube comes out of the other and rolls once more the same way.</td></tr>
+          <tr><td><code>string Seed</code>, <code>TumbleSettings Settings</code></td><td>What it was made from, so it can be
+            made again. Both are empty on a hand-made puzzle.</td></tr>
+          <tr><td><code>bool Solvable</code>, <code>int Par</code></td><td>Whether it can be won, and the proven fewest rolls
+            (-1 when unsolvable or not verified).</td></tr>
+          <tr><td><code>long OptimalCount</code>, <code>bool CountComplete</code>, <code>bool Unique</code></td><td>How many
+            best solutions there are, whether that count is complete (it stops at 1,000,000,000), and whether there is
+            exactly one.</td></tr>
+          <tr><td><code>bool CanGetStuck</code></td><td>Whether a player can reach a position that can never be won.</td></tr>
+          <tr><td><code>int Walk</code>, <code>int Detour</code></td><td>The fewest rolls ignoring the faces (start to goal,
+            or over every target in the best order), and <code>Par - Walk</code>: the rolls spent turning the cube.</td></tr>
+          <tr><td><code>int Difficulty</code></td><td>The 1 to 5 star rating (0 when unsolvable or not proven).</td></tr>
+          <tr><td><code>int TurningSpots</code>, <code>float Coverage</code>, <code>bool Trimmed</code></td><td>Open 2 x 2
+            squares where the cube can turn on the spot, the share of the tiles the best solution rolls over (0 to 1), and
+            whether the board was trimmed to the puzzle.</td></tr>
+          <tr><td><code>List&lt;int&gt; Solution</code>, <code>List&lt;int&gt; Moves</code></td><td>One best solution: the cells
+            it passes, start first, and its directions.</td></tr>
+          <tr><td><code>List&lt;string&gt; Notes</code></td><td>Plain-words notes from the generator and the solver. The
+            <a href="#generating-honesty">Generating</a> page lists them.</td></tr>
+          <tr><td><code>CellCount</code>, <code>CellAt(x, y)</code>, <code>X(cell)</code>, <code>Y(cell)</code>,
+            <code>Neighbor(cell, dir)</code></td><td>Cell arithmetic. <code>CellAt</code> and <code>Neighbor</code> give -1 off
+            the board.</td></tr>
+          <tr><td><code>IsWall</code>, <code>IsHole</code>, <code>IsOutside</code>, <code>IsFloor(cell)</code></td><td>What a
+            cell is. A floor cell is on the board, inside the outline, and not a wall or a hole.</td></tr>
+          <tr><td><code>MaxTargets</code>, <code>MaxKeys</code>, <code>MaxSwitches</code>, <code>MaxMultiFaces</code>,
+            <code>MaxTurntables</code>, <code>MaxCrumbling</code>, <code>MaxPortals</code>, <code>MaxBits</code></td><td>The
+            limits: 8 targets, 4 keys, 4 switches, 4 multi-face tiles, 4 turntables, 4 crumbling tiles and 2 portal pairs.
+            Targets, keys, switches, multi-face faces and crumbling tiles count 10 at most together, because each one
+            doubles the positions the solver weighs.</td></tr>
+        </table>
+        <p>Each tile type is a small struct with a constructor and a short <code>ToString()</code>:
+          <code>new AvoidTile(cell, face)</code>, <code>new OneWayTile(cell, dir)</code>, <code>new DoorTile(cell, key)</code>,
+          <code>new SwitchTile(cell, channel, face = -1)</code>, <code>new GateTile(cell, channel, startsOpen = false)</code>,
+          <code>new MultiFaceTile(cell, facesMask)</code>, <code>new TurntableTile(cell, clockwise)</code> and
+          <code>new PortalPair(a, b)</code>.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-cube">Cube</h2>
+        <p>The rolling law, built once into tables, so the solver, the generator and the play rules all turn the cube the
+          same way.</p>
+        <table>
+          <tr><th>Member</th><th>What it does</th></tr>
+          <tr><td><code>Faces</code>, <code>Orientations</code>, <code>Directions</code></td><td>6, 24 and 4.
+            <code>North</code>, <code>East</code>, <code>South</code> and <code>West</code> are 0 to 3.</td></tr>
+          <tr><td><code>int Standard</code></td><td>Face 0 on top and face 4 facing north, so face 5 is down.</td></tr>
+          <tr><td><code>int Make(int top, int north)</code></td><td>The orientation with these faces on top and facing north,
+            or -1 when the two are the same face or opposite.</td></tr>
+          <tr><td><code>int Top(o)</code>, <code>int Bottom(o)</code>, <code>int FaceOn(o, side)</code></td><td>The face on
+            top, the face down, and the face on any <code>CubeSide</code>.</td></tr>
+          <tr><td><code>CubeSide SideOf(o, face)</code></td><td>Which side a face is on.</td></tr>
+          <tr><td><code>int Rolled(o, dir)</code></td><td>The orientation after one roll that way.</td></tr>
+          <tr><td><code>int Spun(o, clockwise)</code></td><td>The orientation after a turntable's quarter turn, seen from
+            above.</td></tr>
+          <tr><td><code>Opposite(face)</code>, <code>OppositeDirection(dir)</code>, <code>Axis(side)</code></td><td>The
+            opposite face, the opposite direction, and the way a side faces (x east, y north, z up).</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-play">Playing: TumbleRules</h2>
+        <p>The rules a game plays by. They are the same rules the solver counted with, so a game built on them always
+          agrees with the par.</p>
+        <table>
+          <tr><th>Method</th><th>What it does</th></tr>
+          <tr><td><code>TumblePlay NewGame(TumbleData m)</code></td><td>The starting position. In StampAll a target the cube
+            starts on with the goal face down is stamped already.</td></tr>
+          <tr><td><code>bool TryRoll(TumbleData m, TumblePlay play, int dir, out string reason)</code></td><td>Rolls the cube
+            one cell if the rules allow it and updates the position in place: landing on a key takes it, landing on a
+            switch flips its gates, landing on a target with the goal face down stamps it, and rolling off a crumbling tile
+            breaks it. On a refusal it returns false with a short reason, such as "the door at 3 needs key 0". An overload
+            leaves out the reason.</td></tr>
+          <tr><td><code>RollBlock Blocked(TumbleData m, TumblePlay play, int dir)</code></td><td>Why a roll isn't allowed,
+            without changing anything.</td></tr>
+          <tr><td><code>bool Hint(TumbleData m, TumblePlay play, out int dir, int stateBudget = TumbleSolver.DefaultBudget)</code></td>
+            <td>The first roll of a best way on from here. False when the puzzle is won or can't be won from here. The
+            budget is never less than every position the board can hold, so a hint is always exact.</td></tr>
+          <tr><td><code>bool IsSolved(TumbleData m, TumblePlay play)</code></td><td>True once the puzzle is won. Every
+            multi-face tile also has to have all its faces pressed.</td></tr>
+          <tr><td><code>bool IsGateOpen(m, play, cell)</code>, <code>bool IsPressed(m, play, tile, face)</code>,
+            <code>bool IsCrumbled(m, play, tile)</code></td><td>How a gate, a multi-face tile's face, or a crumbling tile
+            stands in this position. <code>tile</code> is an index into <code>MultiFaces</code> or
+            <code>Crumbling</code>.</td></tr>
+          <tr><td><code>int NextTarget(TumbleData m, TumblePlay play)</code></td><td>Ordered StampAll: the index of the
+            target to stamp next, or -1 once all are stamped. Otherwise always -1.</td></tr>
+          <tr><td><code>bool Validate(TumbleData m, out string error)</code></td><td>Checks that the data makes sense: cells
+            on the board, nothing sharing a tile it can't share, the limits, a real orientation and goal face, and not won
+            at the start. It doesn't say whether the puzzle can be solved; the solver does.</td></tr>
+        </table>
+        <p><span class="k">TumblePlay</span> is the position in play, and the only thing a game has to keep between
+          rolls:</p>
+        <table>
+          <tr><th>Member</th><th>What it is</th></tr>
+          <tr><td><code>int Cell</code>, <code>int Orientation</code></td><td>Where the cube is and how it sits.</td></tr>
+          <tr><td><code>int Stamped</code>, <code>bool IsStamped(index)</code></td><td>The targets stamped, bit i for
+            <code>Targets[i]</code>.</td></tr>
+          <tr><td><code>int Keys</code>, <code>bool HasKey(key)</code></td><td>The keys taken. A key's doors stay open for
+            good.</td></tr>
+          <tr><td><code>int Flips</code>, <code>bool IsFlipped(channel)</code></td><td>The switches pressed an odd number of
+            times.</td></tr>
+          <tr><td><code>int Pressed</code></td><td>The multi-face presses so far. Read them with
+            <code>TumbleRules.IsPressed</code>.</td></tr>
+          <tr><td><code>int Worn</code></td><td>The crumbling tiles the cube has stood on. Read them with
+            <code>TumbleRules.IsCrumbled</code>, because the one under the cube hasn't broken yet.</td></tr>
+          <tr><td><code>TumblePlay Clone()</code></td><td>A copy, for undo.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-solver">Solving and rating</h2>
+        <table>
+          <tr><th>Member</th><th>What it does</th></tr>
+          <tr><td><code>TumbleVerdict TumbleSolver.Solve(TumbleData m, int stateBudget = DefaultBudget)</code></td><td>Solves
+            a puzzle from its start.</td></tr>
+          <tr><td><code>TumbleVerdict TumbleSolver.SolveFrom(TumbleData m, TumblePlay play, int stateBudget = DefaultBudget)</code></td>
+            <td>Solves on from a position in play: its <code>Par</code> is the rolls still needed.</td></tr>
+          <tr><td><code>TumbleVerdict TumbleSolver.Verify(TumbleData m, int stateBudget = DefaultBudget)</code></td><td>Solves
+            and writes the verdict, the walk, the stars, the turning spots and the coverage into the puzzle. Use it after
+            building or changing a puzzle by hand.</td></tr>
+          <tr><td><code>int TumbleSolver.StatesOnBoard(TumbleData m)</code></td><td>Every position the puzzle can have: floor
+            tiles x 12 (x 24 with a turntable or a portal) x 2 for each target, key, switch, multi-face face and crumbling
+            tile. Pass it as the budget and the search is never cut.</td></tr>
+          <tr><td><code>TumbleSolver.DefaultBudget</code>, <code>TumbleSolver.CountCap</code></td><td>500,000 positions, and
+            the 1,000,000,000 where the best-solution count stops.</td></tr>
+          <tr><td><code>int PlainWalk(m)</code>, <code>int WalkDistance(m, from, to)</code></td><td>The walk the stars measure
+            the detour against, and the fewest rolls between two cells, both ignoring the faces (walls, holes, the edge and
+            one-way tiles still count).</td></tr>
+          <tr><td><code>int[] ParFromEveryState(m)</code>, <code>bool[] CanGetStuckFromEveryState(m)</code></td><td>Whole-board
+            tables, indexed <code>cell * 24 + orientation</code>: the exact par from every position as a fresh start (-1
+            when it can't win), and whether the cube can get stuck from there. This is how the generator picks a
+            start.</td></tr>
+          <tr><td><code>bool[] BestSolutionCells(m)</code>, <code>bool[] ShortestPlainWalkCells(m)</code>,
+            <code>int[] PlainWalkFromEveryCell(m)</code>, <code>WalkFromEveryCell(m, to)</code>,
+            <code>WalkToEveryCell(m, from)</code></td><td>Which cells lie on some best solution or some shortest plain walk,
+            and walking distances over the whole board. Trimming uses them.</td></tr>
+          <tr><td><code>TumbleDifficulty.Stars(m)</code>, <code>Score(m)</code>, <code>StarsFor(score, mode, targets)</code></td>
+            <td>The stars from a solved puzzle: the score is par + 2 x detour, and the bands it is read against
+            (<code>Bands</code>, <code>StampBands</code>, <code>BandsFor(mode, targets)</code>) are on the
+            <a href="#generating-stars">Generating</a> page.</td></tr>
+        </table>
+        <p><span class="k">TumbleVerdict</span> holds <code>Solvable</code>, <code>Par</code>, <code>Count</code>,
+          <code>CountComplete</code>, <code>Unique</code>, <code>CanGetStuck</code>, <code>BudgetCut</code>,
+          <code>Explored</code>, and one best solution as <code>Path</code> (cells, the cube's first),
+          <code>Orientations</code> (how it sits at each) and <code>Moves</code> (directions).</p>
+        <div class="callout info"><p>The generator, <code>Hint</code> and the inspectors' Verify never use a budget smaller
+          than <code>StatesOnBoard</code>, so their results are always exact. Only a solve you call yourself with a smaller
+          budget can be cut short, and then the puzzle's notes say so.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-byhand">A puzzle by hand</h2>
+        <p>Fill in the board and the puzzle, check it with <span class="k">TumbleRules.Validate</span>, then let the solver
+          write the verdict. This 5 x 4 board puts the key in the top left corner and a door on both ways into the goal, so
+          the cube has to fetch the key first. The comments show what it prints.</p>
+<pre><code>using System.Collections.Generic;
+using System.Linq;
+using SimpleTumble;
+using UnityEngine;
+
+var m = new TumbleData
+{
+    Width = 5, Height = 4,
+    Mode = TumbleMode.ReachGoal,
+    Start = 0,                          // cell (0, 0), bottom left
+    StartOrientation = Cube.Standard,   // face 0 on top, face 5 down
+    Goal = 4,                           // cell (4, 0), bottom right
+    GoalFace = 0,                       // win with face 0 down
+    Walls = new List&lt;int&gt; { 7, 12 },
+    Keys = new List&lt;int&gt; { 15 },        // key 0 on cell (0, 3), top left
+    Doors = new List&lt;DoorTile&gt; { new DoorTile(3, 0), new DoorTile(9, 0) },   // both ways into the goal
+};
+
+if (!TumbleRules.Validate(m, out string error)) Debug.LogError(error);
+TumbleSolver.Verify(m, TumbleSolver.StatesOnBoard(m));   // a budget this big never cuts the search
+Debug.Log(TumbleAudit.Short(m));                          // 5 x 4, reach the goal, par 10, 1 star, unique
+Debug.Log(string.Join(" ", m.Moves.Select(d => "NESW"[d])));   // N N N S E S S E E E</code></pre>
+        <p>Without the key and its doors the same board takes 8 rolls, so the key really is part of the puzzle. Rolling
+          east from the start runs into the shut door on the third roll, and <span class="k">TryRoll</span> refuses it
+          with "the door at 3 needs key 0".</p>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-presets">Presets, Auto and audit</h2>
+        <table>
+          <tr><th>Member</th><th>What it does</th></tr>
+          <tr><td><code>TumblePresets.All</code></td><td>The 20 presets. Each <code>TumblePreset</code> has a
+            <code>Name</code> ("Difficulty/Big board, trimmed"), a <code>Description</code>, and <code>Make()</code>, which
+            returns fresh settings.</td></tr>
+          <tr><td><code>TumbleSettings TumblePresets.Tune(TumbleSettings s, List&lt;string&gt; changes)</code></td><td>The Auto
+            button: a copy with settings that fight each other fixed, and a line in <code>changes</code> for each
+            fix.</td></tr>
+          <tr><td><code>int TumblePresets.Bits(TumbleSettings s)</code></td><td>How many of the 10 bits a request uses:
+            targets (StampAll), keys, switches, multi-face faces and crumbling tiles.</td></tr>
+          <tr><td><code>bool TumbleAudit.MeetsRequest(TumbleData m)</code></td><td>True when a puzzle got everything its
+            settings asked for. A hand-made puzzle only needs to be solvable.</td></tr>
+          <tr><td><code>List&lt;string&gt; TumbleAudit.Missing(TumbleData m)</code></td><td>What it missed, in plain words, such
+            as "2 of 3 keys" or "4 stars, asked 2". Empty when it got everything.</td></tr>
+          <tr><td><code>bool TumbleAudit.Verify(TumbleData m, out string before, out string after)</code></td><td>Solves again
+            and restamps the verdict. Returns true when the verdict changed. Data that fails <code>Validate</code> is left
+            alone, with the reason in <code>after</code>.</td></tr>
+          <tr><td><code>TumbleData TumbleAudit.Reroll(TumbleData m)</code></td><td>A fresh puzzle from the same settings and a
+            new seed, or null for a hand-made one. An overload takes a cancel, progress and a time limit.</td></tr>
+          <tr><td><code>bool TumbleAudit.Generated(TumbleData m)</code></td><td>True when the puzzle came from the generator
+            (it has a seed and settings).</td></tr>
+          <tr><td><code>string TumbleAudit.Short(TumbleData m)</code></td><td>One line, such as "7 x 7, reach the goal, par
+            18, 3 stars".</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-pictures">Pictures</h2>
+        <p><span class="k">TumbleExport</span> draws a puzzle with no Unity code at all, so it also works in tools and on a
+          server.</p>
+        <table>
+          <tr><th>Member</th><th>What it does</th></tr>
+          <tr><td><code>byte[] Png(TumbleData m, ExportOptions options = null)</code></td><td>A .png file's bytes.</td></tr>
+          <tr><td><code>string Svg(TumbleData m, ExportOptions options = null)</code></td><td>An SVG document, which stays
+            sharp at any size.</td></tr>
+          <tr><td><code>byte[] Pixels(TumbleData m, ExportOptions options, out int width, out int height)</code></td><td>Raw
+            RGBA bytes, top row first. Another overload also gives a <code>PictureFrame</code>, whose
+            <code>CellAt(px, py)</code> and <code>CellCentre(cell, out px, out py)</code> map a point on the picture to a cell
+            and back.</td></tr>
+          <tr><td><code>int FitSize(TumbleData m, ExportOptions options, int maxWidth, int maxHeight)</code></td><td>The
+            <code>Size</code> that fits a picture in a box.</td></tr>
+          <tr><td><code>TumblePlay PlayAt(TumbleData m, int step)</code></td><td>The position after the first
+            <code>step</code> rolls of the stored solution.</td></tr>
+          <tr><td><code>List&lt;LegendIcon&gt; Legend(TumbleData m, int step, int iconPx)</code></td><td>The picture's legend as
+            lines of text, each with its icon, for drawing beside the board in your own font.</td></tr>
+          <tr><td><code>NetPixels(orientation, cell, ...)</code>, <code>NetSize</code>, <code>NetBox</code></td><td>The cube
+            unfolded, with the top ringed and the face down boxed apart, as the editor's cube panel shows it.</td></tr>
+          <tr><td><code>FaceAtlasPixels(cell, ...)</code>, <code>ChipAtlasPixels(cell, ...)</code></td><td>The six face chips
+            side by side, for texturing a 3D cube or marking a face on a tile.</td></tr>
+        </table>
+        <p><span class="k">ExportOptions</span> has <code>Style</code>, <code>Size</code> (the board's longer side in pixels,
+          1600 by default), <code>Step</code> (-1 for the start, or a step of the solution, with the rolls so far drawn as a
+          line), <code>Legend</code> and <code>Cube</code> (false leaves the cube off, for a 3D view that puts a real one on
+          top). <span class="k">TumbleLook</span> has the six faces' <code>Colours</code>, <code>ColourNames</code> and
+          <code>ShapeNames</code>, <code>Look(face)</code> ("green diamond"), <code>Name(face)</code> ("the green diamond
+          (face 3)") and <code>IsLight(face)</code>, which says whether to draw the face's shape dark on it.</p>
+        <table>
+          <tr><th>Type</th><th>What it does</th></tr>
+          <tr><td><code>TumbleSketch</code></td><td>A puzzle as drawing marks in board units, which is what the pictures and
+            the editor preview draw. <code>Build(m, play, rolls)</code> gives one <code>Mark</code> per thing on the board
+            (a <code>Kind</code>, its cell, numbers and whether it is done in that position) and the solution as
+            <code>Lines</code>. <code>Describe(m, cell, play)</code> is a tooltip for one cell, and <code>Frames(m)</code> is
+            the stored solution roll by roll, each with a caption.</td></tr>
+          <tr><td><code>TumbleView3D</code></td><td>The numbers behind a 3D view, with no Unity types:
+            <code>CubeMesh(orientation, ...)</code> builds a cube whose sides carry the right faces, <code>Rest</code> and
+            <code>Rolling(m, cell, orientation, dir, t)</code> give the cube's <code>Pose</code> at rest and partway through a
+            roll (portals and turntables included), and <code>BoardUV</code> lays a board picture on a 3D slab.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-assets">ScriptableObjects</h2>
+        <table>
+          <tr><th>Type</th><th>What it holds</th></tr>
+          <tr><td><code>TumblePuzzleAsset</code></td><td>One puzzle: <code>Puzzle</code> and <code>Label</code>, plus shortcuts
+            to its verdict (<code>Width</code>, <code>Height</code>, <code>Mode</code>, <code>Solvable</code>,
+            <code>IsUnique</code>, <code>OptimalCount</code>, <code>CanGetStuck</code>, <code>Par</code>,
+            <code>Difficulty</code>, <code>Seed</code>) and <code>Set(data, label)</code>.</td></tr>
+          <tr><td><code>TumblePuzzlePack</code></td><td>An ordered list of puzzles: <code>PackName</code>,
+            <code>Puzzles</code>, <code>Count</code>, <code>Get(index)</code> (null when out of range), <code>Set</code>,
+            <code>Add</code>, <code>Replace(index, data)</code> and <code>Clear()</code>.</td></tr>
+          <tr><td><code>PuzzleAssets</code></td><td><code>CreatePuzzle(data, label)</code> and
+            <code>CreatePack(puzzles, packName)</code> make new instances in memory, which you can save with
+            <code>AssetDatabase.CreateAsset</code> in the editor or use at runtime.</td></tr>
+          <tr><td><code>IPuzzleProvider</code></td><td>Both asset types implement it: <code>AppendTo(List&lt;TumbleData&gt;
+            levels)</code> adds their puzzles in order, so one list in the inspector can take either.</td></tr>
+        </table>
+        <p>Both are created by the Tumble Generator's Save menu, not by an empty right-click Create.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-demo">Demo components</h2>
+        <p>These are in <span class="k">SimpleTumble.Demo</span>. The <a href="#demos">Demos</a> page explains how they
+          fit together.</p>
+        <table>
+          <tr><th>Type</th><th>What it does</th></tr>
+          <tr><td><code>TumbleDemo</code></td><td>The one component the demo scene needs. It builds the board, game, HUD, hub,
+            sounds and effects in code and runs the flow. Fields: <code>Camera</code>, <code>UiThroughCamera</code>,
+            <code>Pitch</code>, <code>HdrpLook</code> and a level pack per mode. Methods include <code>Setup()</code>,
+            <code>PlayEndless(mode, shaped, stars)</code>, <code>PlayLevel(mode, index)</code>,
+            <code>Generate(mode, settings)</code>, <code>Begin(puzzle)</code>, <code>NextGame()</code> and
+            <code>BackToHub()</code>.</td></tr>
+          <tr><td><code>TumbleGame</code></td><td>Plays a puzzle on a <code>TumbleBoardView</code>: rolls against par, undo,
+            restart, hints and solving by itself, with keyboard, swipe, tap and camera controls. Start a game with
+            <code>Begin(puzzle)</code>, drive it with <code>Roll(dir)</code>, <code>Push(screenDir)</code>,
+            <code>Tap(screenPoint)</code>, <code>Undo()</code>, <code>Restart()</code>, <code>ShowHint()</code> and
+            <code>StartAutoSolve()</code>, and listen to <code>Moved</code>, <code>Won</code>, <code>Message</code>,
+            <code>Cue</code> and <code>Moment</code>. <code>Why(m, play, dir, block)</code> words a refusal for a
+            player.</td></tr>
+          <tr><td><code>TumbleBoardView</code></td><td>Builds a puzzle in 3D from meshes made in code, with no prefabs:
+            <code>Build(puzzle)</code>, <code>Show(play)</code> (every gimmick as it stands in that position),
+            <code>Place(pose)</code>, <code>FrameCamera(camera)</code>, <code>CellWorld(cell)</code> and
+            <code>LocalBounds</code>.</td></tr>
+          <tr><td><code>TumbleHud</code></td><td>The in-game HUD and win panel, in uGUI with the built-in font.
+            <code>FreeAreas(camera)</code> says where the board can go without the HUD covering it.</td></tr>
+          <tr><td><code>TumbleHub</code></td><td>The front screen: the welcome panel, the mode cards, and each mode's Endless
+            and Level Pack setup.</td></tr>
+          <tr><td><code>TumbleDemoMode</code>, <code>TumbleModes</code>, <code>TumbleEndless</code></td><td>The four demo
+            modes, their names, colours and sample puzzles, and the Endless recipe for each mode, board and star
+            count.</td></tr>
+          <tr><td><code>TumblePackProgress</code></td><td>Each pack level's best rolls, kept in PlayerPrefs:
+            <code>Best</code>, <code>Record</code>, <code>Clear</code> and <code>NameOf</code>.</td></tr>
+          <tr><td><code>TumbleBeeper</code></td><td>Sounds made in code for every <code>TumbleCue</code>, with no audio
+            files.</td></tr>
+          <tr><td><code>TumbleEffects</code></td><td>Small effects (dust, bursts, rings and confetti) from a pool of
+            primitives, for every <code>TumbleMoment</code>.</td></tr>
+          <tr><td><code>TumbleMeshes</code>, <code>MeshBuilder</code></td><td>The meshes, made in code: the cube for each
+            orientation, its face atlas, and the tiles and gimmicks.</td></tr>
+          <tr><td><code>DemoLook</code>, <code>DemoHdrp</code></td><td>The demo's colours and materials for the active render
+            pipeline, and the HDRP volume that gives it the same look.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="api-reference-blocks">Building blocks</h2>
+        <p>The pieces the generator is made of are public too, for anyone who wants to build their own pipeline. Most
+          projects never need them.</p>
+        <table>
+          <tr><th>Type</th><th>What it does</th></tr>
+          <tr><td><code>TumbleBuilder</code></td><td><code>Build(settings, seed)</code> makes one puzzle from clamped
+            settings and an exact seed and solves it, which is what every <code>TumbleGenerator</code> method
+            calls.</td></tr>
+          <tr><td><code>TumbleShape</code></td><td>Board outlines: <code>Cut(w, h, outline, notes)</code>,
+            <code>TryParse(rows, ...)</code> for a custom outline, <code>KeepLargest</code>, and
+            <code>TrimToPuzzle(m, margin, mode)</code>, which cuts away tiles far from the solution without changing the
+            par.</td></tr>
+          <tr><td><code>TumbleLayout</code>, <code>ObstaclePlacer</code>, <code>ObstacleRules</code>,
+            <code>ObstacleMetrics</code></td><td>Placing walls and holes so the free tiles stay connected and evenly spread,
+            and counting <code>TurningSpots</code>.</td></tr>
+          <tr><td><code>Rng</code></td><td>The small deterministic random generator, seeded from a string.</td></tr>
+        </table>
+      </div>
+
+
+      <div class="hero" id="demos">
+    <h1>Demos</h1>
+    <p class="tagline">What the 3D demo does, how it is put together, and how to use its pieces in your own game.</p>
+      </div>
+
+
+      <div class="section">
+        <h2 id="demos-scene">The demo scene</h2>
+        <p>Open <span class="k">Assets/SimpleTumble/Scenes/SimpleTumbleDemo.unity</span> and press Play. The scene holds a
+          camera, a sun, and one object called <strong>Simple Tumble Demo</strong> with the
+          <span class="k">TumbleDemo</span> component and the four level packs assigned. Everything else, from the tiles and
+          the cube to the menus, is built in code when the scene starts, so there are no prefabs, models, textures or audio
+          files to look after.</p>
+        <div class="callout info"><p>The demo reads the mouse, touch and keyboard through the Input System package. If
+          nothing happens when you tap or press keys, set <strong>Project Settings &gt; Player &gt; Active Input
+          Handling</strong> to <em>Input System Package</em> or <em>Both</em>.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="demos-component">One component: TumbleDemo</h2>
+        <p>Add <span class="k">TumbleDemo</span> to any object in a scene with a camera and press Play. When it starts, it
+          builds:</p>
+        <ul>
+          <li>a <strong>Board</strong> child with <span class="k">TumbleBoardView</span>, which draws the board, the cube and
+            every gimmick, and <span class="k">TumbleGame</span>, which plays them;</li>
+          <li>the <strong>HUD</strong> (<span class="k">TumbleHud</span>) and the <strong>hub</strong>
+            (<span class="k">TumbleHub</span>), both in uGUI with Unity's built-in font;</li>
+          <li><span class="k">TumbleBeeper</span> for the sounds and <span class="k">TumbleEffects</span> for the
+            effects.</li>
+        </ul>
+        <p>It also gives the camera a plain background colour and a 30 degree field of view, and adds a sun if the scene
+          has no light.</p>
+        <table>
+          <tr><th>Field</th><th>What it does</th></tr>
+          <tr><td><code>Camera</code></td><td>The camera that shows the board. Empty uses the main camera, and if there is
+            none, one is made.</td></tr>
+          <tr><td><code>UiThroughCamera</code></td><td>Draw the HUD and the hub through the camera instead of over the
+            screen, so the camera's own picture includes them.</td></tr>
+          <tr><td><code>Pitch</code></td><td>How steeply the camera looks down at the board to start with, in degrees (55 by
+            default). Players can tilt it while they play.</td></tr>
+          <tr><td><code>HdrpLook</code></td><td>HDRP only: give the demo the same look as on the other pipelines. Turn it
+            off to use your own volumes and lights.</td></tr>
+          <tr><td><code>ClassicPack</code>, <code>StampPack</code>, <code>LocksPack</code>,
+            <code>TrickyTilesPack</code></td><td>The level pack for each mode. Any can be empty, and that mode's Level Pack
+            tab then says how to fill it.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="demos-flow">The flow</h2>
+        <div class="step"><div class="step-number">1</div><div class="step-content">
+          <h4>Welcome</h4><p>The first screen says what Simple Tumble is and where to make your own puzzles, with the
+          publisher's contact at the bottom. <strong>Let's play</strong> goes on, and <strong>About</strong> on the mode
+          screen brings it back.</p></div></div>
+        <div class="step"><div class="step-number">2</div><div class="step-content">
+          <h4>Pick a mode</h4><p>Four cards, each with a picture of a small puzzle of that mode, drawn by the asset's own
+          exporter.</p></div></div>
+        <div class="step"><div class="step-number">3</div><div class="step-content">
+          <h4>Endless or Level Pack</h4><p><strong>Endless</strong> lets you pick a <strong>Square</strong> board or
+          <strong>Shapes</strong> (a cross, ring, diamond, circle, heart or L) and a difficulty from 1 to 5 stars, then
+          makes a new puzzle to that order on a background thread. <strong>Level Pack</strong> shows the mode's levels as
+          numbered buttons: grey still to do, the mode's colour solved, and gold solved on par. <strong>Play</strong>
+          starts the first level you haven't solved. The demo remembers your choices for each mode while it
+          runs.</p></div></div>
+        <div class="step"><div class="step-number">4</div><div class="step-content">
+          <h4>Play</h4><p>A card at the top left shows what to do (reach the goal, or stamp the targets) beside a chip of
+          the face that does it, the board and its gimmicks, its stars, your rolls against par and the hints used, how
+          the gimmicks stand (targets stamped, keys taken, gates open, faces pressed, tiles crumbled), and a line for
+          messages such as why a roll was refused. A button bar has Undo, Restart, Hint, Solve and Menu.</p></div></div>
+        <div class="step"><div class="step-number">5</div><div class="step-content">
+          <h4>Win</h4><p>The cube hops twice, confetti falls, and after a short pause a panel shows your rolls, the par
+          and a rating, with <strong>Replay</strong>, <strong>Menu</strong> and <strong>Next</strong> (or press Enter). In
+          Endless, Next makes a new puzzle to the same order, and in a pack it goes to the next level, then back to the
+          pack after the last one. <strong>Menu</strong> or <strong>Esc</strong> returns to the mode cards at any
+          time.</p></div></div>
+      </div>
+
+      <div class="section">
+        <h2 id="demos-modes">The four modes</h2>
+        <table>
+          <tr><th>Mode</th><th>Endless puzzles</th></tr>
+          <tr><td>Classic</td><td>Reach the goal with the right face down, on a board that grows with the stars, from 5 x 5
+            at 1 star to 9 x 9 at 5.</td></tr>
+          <tr><td>Stamp</td><td>Stamp every target: 2 targets at 1 star, 3 at 2 and 3 stars, 4 at 4 and 5 at 5. From 4
+            stars every other puzzle wants them in order.</td></tr>
+          <tr><td>Locks</td><td>A key or a switch at 1 and 2 stars, both at 3, two switches or both with face locks at 4,
+            and two keys and a switch at 5. Two locks never made a 1 or 2 star puzzle when it was measured.</td></tr>
+          <tr><td>Tricky Tiles</td><td>A one-way tile (sometimes with an avoid tile) at 1 star, avoid and one-way tiles or a turntable
+            at 2, a turntable with a crumbling tile or a portal at 3, a portal or a turntable with a crumbling and a one-way
+            tile at 4, and a portal with two turntables or a multi-face tile at 5.</td></tr>
+        </table>
+        <p>Each star level has two recipes, and each new puzzle picks one, so Endless doesn't repeat itself. Shapes boards
+          are two cells bigger than square ones. The recipes are in <span class="k">TumbleEndless</span>, and each one goes
+          through <span class="k">TumblePresets.Tune</span> and verified generation with the stars as its target, so the
+          puzzle you get rates the stars you picked.</p>
+        <p>The recipes were measured by making 8 puzzles for every mode, board and star level. 312 of the 320 landed on
+          exactly the stars asked, and the slowest took 1.5 seconds. The weakest spot is Locks at 3 stars on Shapes, where 5
+          of 8 landed on 3 stars and the rest came as close as they could.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="demos-packs">The level packs</h2>
+        <p>The demo ships with <strong>44 levels</strong> in four packs in
+          <span class="k">Assets/SimpleTumble/Generated</span>. Each was made by the generator from a fixed seed, landed
+          exactly on the stars it was made for, and was played through to par to check it. They are ordinary
+          <span class="k">TumblePuzzlePack</span> assets, so you can open them in the inspector, read their analysis, or
+          export them as printable pictures.</p>
+        <table>
+          <tr><th>Pack</th><th>Levels</th><th>What's in it</th></tr>
+          <tr><td>Classic</td><td>12</td><td>Reach the goal, rising from 1 star to 5, with a heart, a ring, a cross and a
+            circle among the boards.</td></tr>
+          <tr><td>Stamp</td><td>10</td><td>Stamp the targets, rising from 1 star to 5, with a diamond, a ring and a heart.
+            Levels 7, 9 and 10 want the targets in order.</td></tr>
+          <tr><td>Locks</td><td>10</td><td>A key, then a switch, then both, then face locks, two switches, and two keys with
+            a switch, rising from 1 star to 5.</td></tr>
+          <tr><td>Tricky Tiles</td><td>12</td><td>One new tile per level to start with (one-way, avoid, turntable,
+            crumbling, portal and multi-face), then mixes of them, rising from 1 star to 5.</td></tr>
+        </table>
+        <p><strong>Your own packs:</strong> make puzzles in the Tumble Generator, choose <strong>Save &gt; Pack
+          (all)</strong>, and drag the pack into a slot on the <span class="k">TumbleDemo</span> component.</p>
+        <p><strong>Progress:</strong> each level's best number of rolls is saved in PlayerPrefs under
+          <code>SimpleTumble.Demo.Best.&lt;pack name&gt;.&lt;level&gt;</code>, so it stays on that device. A level Solve
+          helped with isn't recorded. The win panel says "Level complete!", "New best" or "Your best is"
+          accordingly.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="demos-playing">Playing</h2>
+        <p>The controls are listed at the bottom of the screen while you play, and in the
+          <a href="#quick-start-play">Quick Start</a>. A few details:</p>
+        <ul>
+          <li><strong>Rolling:</strong> the arrow keys, WASD and swipes roll the cube the way that looks closest on screen,
+            so the controls stay right however the camera is turned. A tap beside the cube rolls it toward the tap. A key
+            pressed mid-roll waits for the roll to land.</li>
+          <li><strong>The gimmicks react:</strong> a key spins up and away and its doors sink open, switch buttons go
+            down and gates sink or rise, ticks pop up on stamped targets and pressed faces, a crumbling tile drops once
+            the cube rolls off it, the cube shrinks into a portal and grows out of its twin, and a turntable turns with
+            the cube on it.</li>
+          <li><strong>A refused roll</strong> rocks the cube toward that way, and the card says why in plain words: "A wall
+            is in the way.", "Door 1 is locked: take key 1 first.", "Gate 2 is shut: press switch 2 to open it." or "The
+            green diamond mustn't touch down on that tile." Faces are named by their colour and shape.</li>
+          <li><strong>Undo</strong> plays the last roll backwards, with every gimmick back as it stood.
+            <strong>Restart</strong> pops the cube back in on its start.</li>
+          <li><strong>Hint</strong> floats a blue arrow over the cube the way a best solution rolls first. When there is
+            no way to win from where you are, the card says "There's no way on from here: undo or restart."</li>
+          <li><strong>Solve</strong> (or F) plays the rest by itself, one best roll at a time, starting again from the
+            beginning if you have rolled into a dead end. The button says Stop meanwhile, and F or R stops it.</li>
+          <li><strong>The view:</strong> the camera frames the board in the space the HUD leaves free, in landscape or
+            portrait, and again whenever the window changes shape. Turn, tilt and zoom it with the keys or the mouse, and
+            when zoomed in it follows the cube.</li>
+          <li><strong>The rating</strong> on the win panel is 3 pips on par, 2 a little over (up to 2 rolls, or a quarter of
+            the par on longer puzzles) and 1 beyond that.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="demos-sound">Sounds and effects</h2>
+        <p><span class="k">TumbleBeeper</span> makes every sound in code when the demo starts: a wooden tok as the cube
+          lands (three variants, so a run of rolls doesn't sound robotic), a dull bump for a refused roll, a sparkle for a
+          key, a sliding rumble for a door or gate, a click for a switch, a stamp and a chime for a target, a ping for a
+          face pressed, a whirr for a turntable, a whoosh for a portal, a crackle for a crumbling tile, a hint, a rewind
+          for undo and restart, a win arpeggio and a button blip. <strong>M</strong> mutes it. There is no music.</p>
+        <p><span class="k">TumbleEffects</span> adds small effects made from a pool of tiny cubes: dust where the cube
+          lands or bumps, sparkles over a key, a stamped target or a pressed face, dust round a door or gate as it sinks, a
+          swirl at a portal, chunks from a crumbling tile, and confetti over the whole board for the win. Nothing is
+          created or destroyed while you play, and because the effects use the demo's ordinary materials, they look the
+          same in every render pipeline.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="demos-pipelines">Render pipelines</h2>
+        <p>The demo works in <strong>URP</strong> (recommended), <strong>HDRP</strong> and the <strong>Built-in</strong>
+          pipeline without any changes. Its materials use the active pipeline's default lit shader, and a build step keeps
+          that shader in your builds, so the demo doesn't draw pink on a phone. The faces, numbers and marks are baked into
+          lit textures, so nothing needs an unlit or text shader.</p>
+        <p>HDRP lights in physical units, sets the exposure on its own and takes its ambient light from a sky, so the demo
+          would come out dark and tinted. With <span class="k">HdrpLook</span> on, <span class="k">DemoHdrp</span> adds a
+          global volume with a fixed exposure, no tone mapping or bloom, and a gradient sky in the demo's colours, clears
+          the camera to the demo's background colour, and sets the sun in lux. That code only compiles when the HDRP
+          package is installed.</p>
+        <p>The shipped scene was checked in all three pipelines: every material on the pipeline's lit shader, nothing pink,
+          and the pictures within a few shades of each other.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="demos-own">Using the pieces yourself</h2>
+        <p>The demo components work on their own too. The smallest setup is one <span class="k">TumbleGame</span>, which
+          adds its <span class="k">TumbleBoardView</span> automatically:</p>
+<pre><code>using SimpleTumble;
+using SimpleTumble.Demo;
+
+var game = new GameObject("Tumble").AddComponent&lt;TumbleGame&gt;();
+game.Begin(puzzle);                                    // build the board and start a game
+game.View.FrameCamera(Camera.main, pitch: 50f);        // the camera is yours: frame the board once
+game.Message += text =&gt; Debug.Log(text);               // a refused roll, in the player's words
+game.Won += g =&gt; Debug.Log($"Solved in {g.Moves} rolls, par {g.Par}");
+game.Roll(Cube.East);                                  // roll from your own code (keys, swipes and taps work too)</code></pre>
+        <ul>
+          <li><strong>Input:</strong> <span class="k">TumbleGame</span> reads the keys, swipes and taps itself while it is
+            enabled. Your code can roll too, with <code>Roll(dir)</code>, <code>Push(screenDirection)</code> and
+            <code>Tap(screenPoint)</code>, and call <code>Undo()</code>, <code>Restart()</code>, <code>ShowHint()</code>
+            and <code>StartAutoSolve()</code>. Set <code>PointerBlocked</code> so a press over your own UI doesn't roll the
+            cube.</li>
+          <li><strong>The camera</strong> is yours unless you turn on <code>CameraControls</code>, which lets the game frame
+            the board and gives players the turn, tilt and zoom controls. <code>FrameAreas</code> keeps the board in the
+            parts of the screen your UI leaves free.</li>
+          <li><strong>Events:</strong> <code>Moved</code> after every change of position, <code>Won</code> once when it is
+            solved, <code>Message</code> for things a player should read, <code>Cue</code> for every moment worth a sound,
+            and <code>Moment</code> for the same moments with a position and colour for effects.</li>
+          <li><strong>A HUD:</strong> add a <span class="k">TumbleHud</span> and set its <code>Game</code>, or read
+            <code>Moves</code>, <code>Par</code>, <code>Solved</code>, <code>HintsUsed</code> and <code>CanUndo</code> into
+            your own UI.</li>
+          <li><strong>The look:</strong> the colours and materials are in <span class="k">DemoLook.cs</span>, the meshes
+            in <span class="k">TumbleMeshes.cs</span> and <span class="k">TumbleBoardView.cs</span>, and
+            <code>RollTime</code> sets how long a roll takes (0.24 seconds by default).</li>
+          <li><strong>Without the 3D view:</strong> keep a <span class="k">TumblePlay</span> and use
+            <span class="k">TumbleRules</span> directly, as in the <a href="#quick-start-own">Quick Start</a>.</li>
+        </ul>
+      </div>
+
+
+      <div class="hero" id="troubleshooting">
+    <h1>Troubleshooting</h1>
+    <p class="tagline">What the notes mean, why a request can miss, and how long things take.</p>
+      </div>
+
+
+      <div class="section">
+        <h2 id="troubleshooting-notes">Reading the notes</h2>
+        <p>Whenever the generator can't give you exactly what you asked for, it writes a note on the puzzle instead of
+          quietly giving you less. The analysis pane shows every note, and so does <span class="k">TumbleData.Notes</span>
+          from code. Each one starts with what it is about, and the <a href="#generating-honesty">Generating</a> page
+          lists them all. <span class="k">TumbleAudit.MeetsRequest(puzzle)</span> tells you whether a puzzle got everything
+          its settings asked for, <span class="k">TumbleAudit.Missing(puzzle)</span> lists what it missed, and a pack's
+          <strong>Re-roll &gt; Fallbacks</strong> replaces the ones that missed.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-stars">"Target difficulty: 5 stars not found in 40 tries; closest was 4."</h2>
+        <p>The stars come from the par and from the rolls the cube spends turning beyond the plain walk, so they follow
+          the board: a bigger board makes longer puzzles, and fewer places to turn on the spot make more turning work. The
+          note ends with what to try: a bigger or smaller board, more or fewer obstacles, or less turning room. Also:</p>
+        <ul>
+          <li>raise <strong>Max attempts</strong> under Advanced, so more seeds are tried;</li>
+          <li>for fewer stars, use fewer gimmicks. Gimmicks add rolls, so puzzles with them rate higher, and the note says
+            so when that is why it missed. Measured, a ReachGoal puzzle with two keys or switches rarely rates below 3
+            stars and one with three or more rarely below 5 (below 4 when stamping targets), and a multi-face tile rarely
+            goes below 3. <strong>Auto</strong> raises the
+            target to those floors and says why.</li>
+        </ul>
+        <p>A <strong>Tight</strong> trim re-rates the stars after cutting the board, so it can move a puzzle off its
+          target. The puzzle then carries a "Difficulty:" note saying so.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-verified">"Verified: no puzzle in 40 tries ..."</h2>
+        <p>Two notes start this way.</p>
+        <ul>
+          <li><strong>"... was solvable with a par of 30 or more rolls ..."</strong>: no board was sound, meaning solvable,
+            inside the par window and the coverage, and with no way to get stuck when <strong>No soft locks</strong> is on.
+            The note gives the closest puzzle's par and coverage. Widen the par window, lower the minimum coverage, use a
+            bigger board, or fewer obstacles.</li>
+          <li><strong>"... had room for every gimmick asked for ..."</strong>: every board was short of at least one
+            gimmick, and the notes above it say which. A bigger board or fewer gimmicks fits.</li>
+        </ul>
+        <div class="callout tip"><p><strong>Auto</strong> fixes the settings known to fight each other, and the window
+          shows what it would change before you press it.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-room">Fewer gimmicks than asked</h2>
+        <p>Every gimmick is placed where it makes the puzzle longer, and the start is then picked so that every one of
+          them matters. That is why a puzzle sometimes has fewer than you asked for:</p>
+        <ul>
+          <li><strong>"Keys:", "Switches:", "Portals:" and the like</strong> say the board only had room for some of them,
+            and why: no tile where one would lengthen the puzzle, or nowhere left to put it. Bigger boards, fewer
+            obstacles or fewer of that gimmick help. Verified generation tries more seeds first, and the window's
+            <strong>Only on target</strong> keeps just the puzzles that got everything.</li>
+          <li><strong>"Gimmicks:"</strong> says a gimmick made no difference from the best start and was taken away, which
+            never changes the par. It can also say a gimmick was left on because taking it away would let the cube get
+            stuck.</li>
+        </ul>
+        <p>Turntables, crumbling tiles and portals are placed as tools the best solution has to use, so they need room for
+          a route through them, and a crowded board may not have one.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-bits">Too many targets, keys and switches</h2>
+        <p>Targets, keys, switches, the faces of multi-face tiles and crumbling tiles each double the positions the solver
+          has to weigh, so together they are limited to 10. The window counts them for you, and <strong>Auto</strong>
+          cuts the last ones placed (crumbling tiles first, then multi-face faces, switches and keys) until they fit.
+          Avoid tiles, one-way tiles, turntables and portals don't count toward the limit.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-stuck">"Can get stuck"</h2>
+        <p>A plain board can't trap the cube, because every roll can be rolled back. One-way tiles, switches, turntables
+          and crumbling tiles can, because what they do can't be undone by rolling back. The solver checks every position
+          and reports <span class="k">CanGetStuck</span> when a player could reach one that can never be won.</p>
+        <ul>
+          <li><strong>No soft locks</strong> is on by default, and then only puzzles where it can't happen are kept.</li>
+          <li>Turn it off for harder puzzles where a wrong move can cost the game, and give players Undo and Restart, as
+            the demo does. Its hint also says when there is no way on from where the player is.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-slow">Generation feels slow</h2>
+        <p>Measured on a desktop PC outside Unity, 5 builds of each preset (your machine and Unity's runtime will differ,
+          and a phone is slower):</p>
+        <table>
+          <tr><th>Puzzle</th><th>Time for one verified puzzle</th></tr>
+          <tr><td>Every other preset: plain, shaped and trimmed boards, targets, keys, switches, avoid, one-way and
+            multi-face tiles, turntables</td><td>2 to 46 ms</td></tr>
+          <tr><td>Portals</td><td>73 to 95 ms</td></tr>
+          <tr><td>Crumbling tiles</td><td>39 to 291 ms</td></tr>
+          <tr><td>The Everything preset</td><td>0.3 to 0.7 s</td></tr>
+        </table>
+        <p>The slow case is many targets in any order together with keys and switches, which can take from several
+          seconds to over a minute a board. Fewer targets, keys or switches, or a smaller board, build much faster.</p>
+        <ul>
+          <li>In the window, generation runs on a background thread with a progress bar that says what the board is doing,
+            and Cancel stops it within a fraction of a second. The <strong>Time limit</strong> (60 seconds by default) keeps the closest
+            board that finished, with a "Time limit:" note.</li>
+          <li>In a game, use the <span class="k">Async</span> methods, as the demo does for Endless, or make levels ahead
+            of time in the editor and ship them as a pack.</li>
+          <li>Hints solve from where the player is. In the demo's checks, on 20 puzzles from 10 presets, the slowest hint
+            took 4 ms.</li>
+          <li>On WebGL there are no threads, so the demo makes Endless puzzles on the main thread there, and the game
+            pauses while it does.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-budget">"Solver: the search stopped at ... states"</h2>
+        <p>The generator, the inspectors' Verify and hints always give the solver room for every position the board can
+          hold, so you never see this on their puzzles. It only happens when your own code calls
+          <span class="k">TumbleSolver</span> with a budget smaller than the board. Pass
+          <span class="k">TumbleSolver.StatesOnBoard(puzzle)</span> as the budget and the search is never cut.</p>
+        <p>"Solver: more than 1,000,000,000 best solutions; the count stops there." only means the count is capped. It
+          happens on big open boards, where many best solutions differ only in the order of a few rolls.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-input">The demo ignores taps or keys</h2>
+        <p>The demo uses the Input System package. Set <strong>Project Settings &gt; Player &gt; Active Input
+          Handling</strong> to <em>Input System Package</em> or <em>Both</em>. The hub makes an EventSystem with the Input
+          System's UI module when the scene has none. If your scene already has an EventSystem, its input module has to
+          match your input handling. Presses on the HUD's card and buttons never roll the cube.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-pink">Pink or dark in a pipeline</h2>
+        <ul>
+          <li><strong>Pink in a build:</strong> the demo makes its materials in code, and a build strips shaders that only
+            code uses. Before every build, <span class="k">TumbleLookKeeper</span> writes
+            <code>Runtime/Demo/Resources/SimpleTumbleLook.mat</code> with the active pipeline's lit shader, so the build
+            keeps it. If you see pink, check that file exists after a build (deleting it is fine: the next build writes it
+            again).</li>
+          <li><strong>Dark or tinted in HDRP:</strong> out of the box HDRP uses physical light units, automatic exposure
+            and sky lighting. <span class="k">TumbleDemo.HdrpLook</span> (on by default) adds a global volume at priority
+            10 with a fixed exposure and a gradient sky, and sets the sun in lux, so the demo looks the same as on the
+            other pipelines. Turn it off to let your own volumes and lights take over.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-progress">Resetting the demo's progress</h2>
+        <p>The demo saves each pack level's best rolls in PlayerPrefs, under
+          <code>SimpleTumble.Demo.Best.&lt;pack name&gt;.&lt;level&gt;</code>. Call
+          <span class="k">TumblePackProgress.Clear(packName, count)</span> to forget a pack, or delete those keys. A pack's
+          progress is filed under its pack name, so renaming a pack starts it fresh.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-seeds">Seeds and versions</h2>
+        <p>The same settings and seed always give the same puzzle within a version of Simple Tumble. A future version that
+          improves the generator may change what a seed produces. Saved assets store the puzzle itself, not just its seed,
+          so your saved puzzles and packs never change. Verified generation stores the seed that actually worked, such as
+          <code>level-7-5#1</code>, so copying a puzzle's own seed always rebuilds that exact puzzle.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-console">Console messages</h2>
+        <ul>
+          <li><strong>"[Simple Tumble] Documentation page not found"</strong>: the documentation menu looks for these pages
+            in a folder whose path contains <code>SimpleTumble</code> and <code>Documentation</code>. Keep the
+            Documentation folder inside the Simple Tumble folder.</li>
+          <li><strong>"[Simple Tumble] Generation failed"</strong>: something went wrong on the window's generation
+            thread. Please send the message with your settings and seed.</li>
+          <li><strong>"[Simple Tumble] Kept ... in the build for the demo"</strong>: the build step wrote the look
+            material, which is expected after you switch render pipelines.</li>
+          <li><strong>"[Simple Tumble] No lit shader found for the active render pipeline"</strong>: the pipeline asset
+            has no default material, so the demo may draw pink in a build. Give the pipeline asset a default
+            material.</li>
+          <li><strong>"[Simple Tumble] Exported 12 file(s) from ..."</strong>: a pack's Export all finished.</li>
+          <li><strong>"Simple Tumble hub: no picture for ..."</strong>: a mode card's picture couldn't be drawn. The card
+            still works without it.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="troubleshooting-ask">Still stuck</h2>
+        <p>Email <a href="mailto:livingfailuregames@gmail.com">livingfailuregames@gmail.com</a> with your Unity version
+          and, for a question about one puzzle, its seed and settings. <strong>Copy seed</strong> and <strong>Copy
+          solution</strong> in the analysis pane make that easy, and a seed rebuilds the puzzle exactly.</p>
+      </div>
+
+
+      <div class="hero" id="about">
+    <h1>About</h1>
+    <p class="tagline">What this is, who made it, and how to get help.</p>
+      </div>
+
+
+      <div class="section">
+        <h2 id="about-about">About Simple Tumble</h2>
+        <p>Simple Tumble is a rolling cube puzzle generator for Unity, made by <strong>Living Failure</strong>. It builds
+          puzzles where a cube tips from tile to tile and has to land the right face down on the goal, or press it onto
+          every target, on square or shaped boards with keys and doors, switches and gates, avoid and one-way tiles,
+          multi-face tiles, turntables, crumbling tiles and portals. Then it solves each puzzle exactly, stamps it with its
+          proven par and a 1 to 5 star difficulty, and stores it as a ScriptableObject or exports it as a picture. A
+          complete 3D demo, built entirely in code, is included.</p>
+        <p class="muted">Version 1.0, made and tested with Unity 6000.6 in URP, HDRP and the Built-in pipeline.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="about-inside">What's in the package</h2>
+        <table>
+          <tr><th>Folder</th><th>What it holds</th></tr>
+          <tr><td><code>Runtime</code></td><td>The core (generation, the puzzle data, the play rules, the solver, pictures
+            and the ScriptableObjects) and, in <code>Runtime/Demo</code>, the 3D demo.</td></tr>
+          <tr><td><code>Editor</code></td><td>The Tumble Generator window, the inspectors, the documentation menu and the
+            build step that keeps the demo's shader.</td></tr>
+          <tr><td><code>Scenes</code></td><td>The demo scene.</td></tr>
+          <tr><td><code>Generated</code></td><td>The demo's four level packs.</td></tr>
+          <tr><td><code>Documentation</code></td><td>These pages, which open offline from <strong>Window &gt; Living
+            Failure &gt; Simple Tumble &gt; Documentation</strong>.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="about-design">Design principles</h2>
+        <ul>
+          <li><strong>Solve exactly.</strong> The par, the number of best solutions and whether the cube can get stuck come
+            from searching every position a puzzle can reach, not from an estimate.</li>
+          <li><strong>Measure, then promise.</strong> The star bands, the presets, Auto's fixes and the demo's difficulty
+            recipes all come from measuring real puzzles, hundreds at a time, and the docs say so where it matters.</li>
+          <li><strong>Be honest.</strong> When a request can't be met, the puzzle's notes say so. Nothing is quietly
+            downgraded, and the store page claims nothing the solver can't back up.</li>
+          <li><strong>Every gimmick matters.</strong> A key, a switch or a tile that changes nothing about the puzzle isn't
+            left on the board.</li>
+          <li><strong>One set of rules.</strong> The generator, the solver and the play rules your game uses all roll the
+            cube the same way, so your game and the par always agree.</li>
+          <li><strong>Not by colour alone.</strong> Every face has a shape as well as a colour, and every gimmick its own
+            shape, in the pictures and in the demo, so colour-blind players can play every puzzle.</li>
+          <li><strong>No bloat.</strong> The core has no package dependencies, and the demo and the editor tools live in
+            their own assemblies. The demo needs no prefabs, models, textures or audio files.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="about-more">More from Living Failure</h2>
+        <p><strong>Simple Color Sort:</strong> ball sort and water sort puzzles with up to 15 colours, locked tubes and
+          hidden pieces, each solved exactly and rated for difficulty and traps.</p>
+        <p><strong>Simple Maze:</strong> mazes on square, hex, triangle and circular grids, with keys and doors, switches,
+          gems, portals, rolling players and up to 8 floors, each solved exactly and rated.</p>
+        <p><strong>Simple Klotski:</strong> sliding-block puzzles in five modes (Gridlock, Klotski, Clear, Clear 3D and
+          Clear Snakes), each board solved exactly and stamped with its proven par.</p>
+        <p><strong>Simple States:</strong> switch-and-state logic puzzles in four modes: Classic combinations, Ordered
+          chains with traps, Lights Out with paintable pattern goals, and the three-state Trilight grid.</p>
+        <p><strong>Simple Connect:</strong> a connection-puzzle toolkit where you draw the pairs (square and hex), rotate
+          the pipes, or rotate a whole network back together.</p>
+        <p><strong>Simple Hamiltonian:</strong> a cover-all, single-path puzzle generator (square and hex), where the
+          solution is one unbroken line that visits every tile once.</p>
+        <p class="muted">All on the Unity Asset Store.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="about-support">Support</h2>
+        <p>Questions, bugs and ideas are welcome at
+          <a href="mailto:livingfailuregames@gmail.com">livingfailuregames@gmail.com</a>. Please include your Unity version
+          and, for anything about a particular puzzle, its seed and settings, since a seed rebuilds the puzzle exactly.
+          Corrections to these pages are welcome too.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="about-license">License</h2>
+        <p>Distributed under the Unity Asset Store End User License Agreement. Use it in your games and tools, but don't
+          resell or redistribute the source as an asset.</p>
+      </div>
+
+
+    </main>
+  </div>
+
+  <div class="footer">
+    <p>Simple Tumble by Living Failure. <a href="#about">About and support</a></p>
+  </div>
+
+</div>
+</body>
+</html>

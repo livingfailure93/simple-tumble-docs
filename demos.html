@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Tumble - Demos</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="format-selector" id="top">
+    <span class="format-label">View:</span>
+    <a href="index.html" class="format-link">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+
+  <nav class="navbar"><ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="quick-start.html">Quick Start</a></li>
+    <li><a href="generating.html">Generating</a></li>
+    <li><a href="api-reference.html">API Reference</a></li>
+    <li><a href="demos.html" class="active">Demos</a></li>
+    <li><a href="troubleshooting.html">Troubleshooting</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul></nav>
+
+  <div class="hero">
+    <h1>Demos</h1>
+    <p class="tagline">What the 3D demo does, how it is put together, and how to use its pieces in your own game.</p>
+  </div>
+
+  <div class="page-layout">
+    <aside class="toc">
+      <h3>On this page</h3>
+      <ul>
+        <li><a href="#scene">The demo scene</a></li>
+        <li><a href="#component">One component: TumbleDemo</a></li>
+        <li><a href="#flow">The flow</a></li>
+        <li><a href="#modes">The four modes</a></li>
+        <li><a href="#packs">The level packs</a></li>
+        <li><a href="#playing">Playing</a></li>
+        <li><a href="#sound">Sounds and effects</a></li>
+        <li><a href="#pipelines">Render pipelines</a></li>
+        <li><a href="#own">Using the pieces yourself</a></li>
+      </ul>
+    </aside>
+    <main class="content">
+
+      <div class="section">
+        <h2 id="scene">The demo scene</h2>
+        <p>Open <span class="k">Assets/SimpleTumble/Scenes/SimpleTumbleDemo.unity</span> and press Play. The scene holds a
+          camera, a sun, and one object called <strong>Simple Tumble Demo</strong> with the
+          <span class="k">TumbleDemo</span> component and the four level packs assigned. Everything else, from the tiles and
+          the cube to the menus, is built in code when the scene starts, so there are no prefabs, models, textures or audio
+          files to look after.</p>
+        <div class="callout info"><p>The demo reads the mouse, touch and keyboard through the Input System package. If
+          nothing happens when you tap or press keys, set <strong>Project Settings &gt; Player &gt; Active Input
+          Handling</strong> to <em>Input System Package</em> or <em>Both</em>.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="component">One component: TumbleDemo</h2>
+        <p>Add <span class="k">TumbleDemo</span> to any object in a scene with a camera and press Play. When it starts, it
+          builds:</p>
+        <ul>
+          <li>a <strong>Board</strong> child with <span class="k">TumbleBoardView</span>, which draws the board, the cube and
+            every gimmick, and <span class="k">TumbleGame</span>, which plays them;</li>
+          <li>the <strong>HUD</strong> (<span class="k">TumbleHud</span>) and the <strong>hub</strong>
+            (<span class="k">TumbleHub</span>), both in uGUI with Unity's built-in font;</li>
+          <li><span class="k">TumbleBeeper</span> for the sounds and <span class="k">TumbleEffects</span> for the
+            effects.</li>
+        </ul>
+        <p>It also gives the camera a plain background colour and a 30 degree field of view, and adds a sun if the scene
+          has no light.</p>
+        <table>
+          <tr><th>Field</th><th>What it does</th></tr>
+          <tr><td><code>Camera</code></td><td>The camera that shows the board. Empty uses the main camera, and if there is
+            none, one is made.</td></tr>
+          <tr><td><code>UiThroughCamera</code></td><td>Draw the HUD and the hub through the camera instead of over the
+            screen, so the camera's own picture includes them.</td></tr>
+          <tr><td><code>Pitch</code></td><td>How steeply the camera looks down at the board to start with, in degrees (55 by
+            default). Players can tilt it while they play.</td></tr>
+          <tr><td><code>HdrpLook</code></td><td>HDRP only: give the demo the same look as on the other pipelines. Turn it
+            off to use your own volumes and lights.</td></tr>
+          <tr><td><code>ClassicPack</code>, <code>StampPack</code>, <code>LocksPack</code>,
+            <code>TrickyTilesPack</code></td><td>The level pack for each mode. Any can be empty, and that mode's Level Pack
+            tab then says how to fill it.</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2 id="flow">The flow</h2>
+        <div class="step"><div class="step-number">1</div><div class="step-content">
+          <h4>Welcome</h4><p>The first screen says what Simple Tumble is and where to make your own puzzles, with the
+          publisher's contact at the bottom. <strong>Let's play</strong> goes on, and <strong>About</strong> on the mode
+          screen brings it back.</p></div></div>
+        <div class="step"><div class="step-number">2</div><div class="step-content">
+          <h4>Pick a mode</h4><p>Four cards, each with a picture of a small puzzle of that mode, drawn by the asset's own
+          exporter.</p></div></div>
+        <div class="step"><div class="step-number">3</div><div class="step-content">
+          <h4>Endless or Level Pack</h4><p><strong>Endless</strong> lets you pick a <strong>Square</strong> board or
+          <strong>Shapes</strong> (a cross, ring, diamond, circle, heart or L) and a difficulty from 1 to 5 stars, then
+          makes a new puzzle to that order on a background thread. <strong>Level Pack</strong> shows the mode's levels as
+          numbered buttons: grey still to do, the mode's colour solved, and gold solved on par. <strong>Play</strong>
+          starts the first level you haven't solved. The demo remembers your choices for each mode while it
+          runs.</p></div></div>
+        <div class="step"><div class="step-number">4</div><div class="step-content">
+          <h4>Play</h4><p>A card at the top left shows what to do (reach the goal, or stamp the targets) beside a chip of
+          the face that does it, the board and its gimmicks, its stars, your rolls against par and the hints used, how
+          the gimmicks stand (targets stamped, keys taken, gates open, faces pressed, tiles crumbled), and a line for
+          messages such as why a roll was refused. A button bar has Undo, Restart, Hint, Solve and Menu.</p></div></div>
+        <div class="step"><div class="step-number">5</div><div class="step-content">
+          <h4>Win</h4><p>The cube hops twice, confetti falls, and after a short pause a panel shows your rolls, the par
+          and a rating, with <strong>Replay</strong>, <strong>Menu</strong> and <strong>Next</strong> (or press Enter). In
+          Endless, Next makes a new puzzle to the same order, and in a pack it goes to the next level, then back to the
+          pack after the last one. <strong>Menu</strong> or <strong>Esc</strong> returns to the mode cards at any
+          time.</p></div></div>
+      </div>
+
+      <div class="section">
+        <h2 id="modes">The four modes</h2>
+        <table>
+          <tr><th>Mode</th><th>Endless puzzles</th></tr>
+          <tr><td>Classic</td><td>Reach the goal with the right face down, on a board that grows with the stars, from 5 x 5
+            at 1 star to 9 x 9 at 5.</td></tr>
+          <tr><td>Stamp</td><td>Stamp every target: 2 targets at 1 star, 3 at 2 and 3 stars, 4 at 4 and 5 at 5. From 4
+            stars every other puzzle wants them in order.</td></tr>
+          <tr><td>Locks</td><td>A key or a switch at 1 and 2 stars, both at 3, two switches or both with face locks at 4,
+            and two keys and a switch at 5. Two locks never made a 1 or 2 star puzzle when it was measured.</td></tr>
+          <tr><td>Tricky Tiles</td><td>A one-way tile (sometimes with an avoid tile) at 1 star, avoid and one-way tiles or a turntable
+            at 2, a turntable with a crumbling tile or a portal at 3, a portal or a turntable with a crumbling and a one-way
+            tile at 4, and a portal with two turntables or a multi-face tile at 5.</td></tr>
+        </table>
+        <p>Each star level has two recipes, and each new puzzle picks one, so Endless doesn't repeat itself. Shapes boards
+          are two cells bigger than square ones. The recipes are in <span class="k">TumbleEndless</span>, and each one goes
+          through <span class="k">TumblePresets.Tune</span> and verified generation with the stars as its target, so the
+          puzzle you get rates the stars you picked.</p>
+        <p>The recipes were measured by making 8 puzzles for every mode, board and star level. 312 of the 320 landed on
+          exactly the stars asked, and the slowest took 1.5 seconds. The weakest spot is Locks at 3 stars on Shapes, where 5
+          of 8 landed on 3 stars and the rest came as close as they could.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="packs">The level packs</h2>
+        <p>The demo ships with <strong>44 levels</strong> in four packs in
+          <span class="k">Assets/SimpleTumble/Generated</span>. Each was made by the generator from a fixed seed, landed
+          exactly on the stars it was made for, and was played through to par to check it. They are ordinary
+          <span class="k">TumblePuzzlePack</span> assets, so you can open them in the inspector, read their analysis, or
+          export them as printable pictures.</p>
+        <table>
+          <tr><th>Pack</th><th>Levels</th><th>What's in it</th></tr>
+          <tr><td>Classic</td><td>12</td><td>Reach the goal, rising from 1 star to 5, with a heart, a ring, a cross and a
+            circle among the boards.</td></tr>
+          <tr><td>Stamp</td><td>10</td><td>Stamp the targets, rising from 1 star to 5, with a diamond, a ring and a heart.
+            Levels 7, 9 and 10 want the targets in order.</td></tr>
+          <tr><td>Locks</td><td>10</td><td>A key, then a switch, then both, then face locks, two switches, and two keys with
+            a switch, rising from 1 star to 5.</td></tr>
+          <tr><td>Tricky Tiles</td><td>12</td><td>One new tile per level to start with (one-way, avoid, turntable,
+            crumbling, portal and multi-face), then mixes of them, rising from 1 star to 5.</td></tr>
+        </table>
+        <p><strong>Your own packs:</strong> make puzzles in the Tumble Generator, choose <strong>Save &gt; Pack
+          (all)</strong>, and drag the pack into a slot on the <span class="k">TumbleDemo</span> component.</p>
+        <p><strong>Progress:</strong> each level's best number of rolls is saved in PlayerPrefs under
+          <code>SimpleTumble.Demo.Best.&lt;pack name&gt;.&lt;level&gt;</code>, so it stays on that device. A level Solve
+          helped with isn't recorded. The win panel says "Level complete!", "New best" or "Your best is"
+          accordingly.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="playing">Playing</h2>
+        <p>The controls are listed at the bottom of the screen while you play, and in the
+          <a href="quick-start.html#play">Quick Start</a>. A few details:</p>
+        <ul>
+          <li><strong>Rolling:</strong> the arrow keys, WASD and swipes roll the cube the way that looks closest on screen,
+            so the controls stay right however the camera is turned. A tap beside the cube rolls it toward the tap. A key
+            pressed mid-roll waits for the roll to land.</li>
+          <li><strong>The gimmicks react:</strong> a key spins up and away and its doors sink open, switch buttons go
+            down and gates sink or rise, ticks pop up on stamped targets and pressed faces, a crumbling tile drops once
+            the cube rolls off it, the cube shrinks into a portal and grows out of its twin, and a turntable turns with
+            the cube on it.</li>
+          <li><strong>A refused roll</strong> rocks the cube toward that way, and the card says why in plain words: "A wall
+            is in the way.", "Door 1 is locked: take key 1 first.", "Gate 2 is shut: press switch 2 to open it." or "The
+            green diamond mustn't touch down on that tile." Faces are named by their colour and shape.</li>
+          <li><strong>Undo</strong> plays the last roll backwards, with every gimmick back as it stood.
+            <strong>Restart</strong> pops the cube back in on its start.</li>
+          <li><strong>Hint</strong> floats a blue arrow over the cube the way a best solution rolls first. When there is
+            no way to win from where you are, the card says "There's no way on from here: undo or restart."</li>
+          <li><strong>Solve</strong> (or F) plays the rest by itself, one best roll at a time, starting again from the
+            beginning if you have rolled into a dead end. The button says Stop meanwhile, and F or R stops it.</li>
+          <li><strong>The view:</strong> the camera frames the board in the space the HUD leaves free, in landscape or
+            portrait, and again whenever the window changes shape. Turn, tilt and zoom it with the keys or the mouse, and
+            when zoomed in it follows the cube.</li>
+          <li><strong>The rating</strong> on the win panel is 3 pips on par, 2 a little over (up to 2 rolls, or a quarter of
+            the par on longer puzzles) and 1 beyond that.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="sound">Sounds and effects</h2>
+        <p><span class="k">TumbleBeeper</span> makes every sound in code when the demo starts: a wooden tok as the cube
+          lands (three variants, so a run of rolls doesn't sound robotic), a dull bump for a refused roll, a sparkle for a
+          key, a sliding rumble for a door or gate, a click for a switch, a stamp and a chime for a target, a ping for a
+          face pressed, a whirr for a turntable, a whoosh for a portal, a crackle for a crumbling tile, a hint, a rewind
+          for undo and restart, a win arpeggio and a button blip. <strong>M</strong> mutes it. There is no music.</p>
+        <p><span class="k">TumbleEffects</span> adds small effects made from a pool of tiny cubes: dust where the cube
+          lands or bumps, sparkles over a key, a stamped target or a pressed face, dust round a door or gate as it sinks, a
+          swirl at a portal, chunks from a crumbling tile, and confetti over the whole board for the win. Nothing is
+          created or destroyed while you play, and because the effects use the demo's ordinary materials, they look the
+          same in every render pipeline.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="pipelines">Render pipelines</h2>
+        <p>The demo works in <strong>URP</strong> (recommended), <strong>HDRP</strong> and the <strong>Built-in</strong>
+          pipeline without any changes. Its materials use the active pipeline's default lit shader, and a build step keeps
+          that shader in your builds, so the demo doesn't draw pink on a phone. The faces, numbers and marks are baked into
+          lit textures, so nothing needs an unlit or text shader.</p>
+        <p>HDRP lights in physical units, sets the exposure on its own and takes its ambient light from a sky, so the demo
+          would come out dark and tinted. With <span class="k">HdrpLook</span> on, <span class="k">DemoHdrp</span> adds a
+          global volume with a fixed exposure, no tone mapping or bloom, and a gradient sky in the demo's colours, clears
+          the camera to the demo's background colour, and sets the sun in lux. That code only compiles when the HDRP
+          package is installed.</p>
+        <p>The shipped scene was checked in all three pipelines: every material on the pipeline's lit shader, nothing pink,
+          and the pictures within a few shades of each other.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="own">Using the pieces yourself</h2>
+        <p>The demo components work on their own too. The smallest setup is one <span class="k">TumbleGame</span>, which
+          adds its <span class="k">TumbleBoardView</span> automatically:</p>
+<pre><code>using SimpleTumble;
+using SimpleTumble.Demo;
+
+var game = new GameObject("Tumble").AddComponent&lt;TumbleGame&gt;();
+game.Begin(puzzle);                                    // build the board and start a game
+game.View.FrameCamera(Camera.main, pitch: 50f);        // the camera is yours: frame the board once
+game.Message += text =&gt; Debug.Log(text);               // a refused roll, in the player's words
+game.Won += g =&gt; Debug.Log($"Solved in {g.Moves} rolls, par {g.Par}");
+game.Roll(Cube.East);                                  // roll from your own code (keys, swipes and taps work too)</code></pre>
+        <ul>
+          <li><strong>Input:</strong> <span class="k">TumbleGame</span> reads the keys, swipes and taps itself while it is
+            enabled. Your code can roll too, with <code>Roll(dir)</code>, <code>Push(screenDirection)</code> and
+            <code>Tap(screenPoint)</code>, and call <code>Undo()</code>, <code>Restart()</code>, <code>ShowHint()</code>
+            and <code>StartAutoSolve()</code>. Set <code>PointerBlocked</code> so a press over your own UI doesn't roll the
+            cube.</li>
+          <li><strong>The camera</strong> is yours unless you turn on <code>CameraControls</code>, which lets the game frame
+            the board and gives players the turn, tilt and zoom controls. <code>FrameAreas</code> keeps the board in the
+            parts of the screen your UI leaves free.</li>
+          <li><strong>Events:</strong> <code>Moved</code> after every change of position, <code>Won</code> once when it is
+            solved, <code>Message</code> for things a player should read, <code>Cue</code> for every moment worth a sound,
+            and <code>Moment</code> for the same moments with a position and colour for effects.</li>
+          <li><strong>A HUD:</strong> add a <span class="k">TumbleHud</span> and set its <code>Game</code>, or read
+            <code>Moves</code>, <code>Par</code>, <code>Solved</code>, <code>HintsUsed</code> and <code>CanUndo</code> into
+            your own UI.</li>
+          <li><strong>The look:</strong> the colours and materials are in <span class="k">DemoLook.cs</span>, the meshes
+            in <span class="k">TumbleMeshes.cs</span> and <span class="k">TumbleBoardView.cs</span>, and
+            <code>RollTime</code> sets how long a roll takes (0.24 seconds by default).</li>
+          <li><strong>Without the 3D view:</strong> keep a <span class="k">TumblePlay</span> and use
+            <span class="k">TumbleRules</span> directly, as in the <a href="quick-start.html#own">Quick Start</a>.</li>
+        </ul>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="footer">
+    <p>Simple Tumble by Living Failure. <a href="about.html">About and support</a></p>
+  </div>
+
+</div>
+</body>
+</html>

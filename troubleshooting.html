@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Tumble - Troubleshooting</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="format-selector" id="top">
+    <span class="format-label">View:</span>
+    <a href="index.html" class="format-link">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+
+  <nav class="navbar"><ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="quick-start.html">Quick Start</a></li>
+    <li><a href="generating.html">Generating</a></li>
+    <li><a href="api-reference.html">API Reference</a></li>
+    <li><a href="demos.html">Demos</a></li>
+    <li><a href="troubleshooting.html" class="active">Troubleshooting</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul></nav>
+
+  <div class="hero">
+    <h1>Troubleshooting</h1>
+    <p class="tagline">What the notes mean, why a request can miss, and how long things take.</p>
+  </div>
+
+  <div class="page-layout">
+    <aside class="toc">
+      <h3>On this page</h3>
+      <ul>
+        <li><a href="#notes">Reading the notes</a></li>
+        <li><a href="#stars">"Target difficulty: ... not found"</a></li>
+        <li><a href="#verified">"Verified: no puzzle ..."</a></li>
+        <li><a href="#room">Fewer gimmicks than asked</a></li>
+        <li><a href="#bits">Too many targets, keys and switches</a></li>
+        <li><a href="#stuck">"Can get stuck"</a></li>
+        <li><a href="#slow">Generation feels slow</a></li>
+        <li><a href="#budget">"Solver: the search stopped"</a></li>
+        <li><a href="#input">The demo ignores taps or keys</a></li>
+        <li><a href="#pink">Pink or dark in a pipeline</a></li>
+        <li><a href="#progress">Resetting the demo's progress</a></li>
+        <li><a href="#seeds">Seeds and versions</a></li>
+        <li><a href="#console">Console messages</a></li>
+        <li><a href="#ask">Still stuck</a></li>
+      </ul>
+    </aside>
+    <main class="content">
+
+      <div class="section">
+        <h2 id="notes">Reading the notes</h2>
+        <p>Whenever the generator can't give you exactly what you asked for, it writes a note on the puzzle instead of
+          quietly giving you less. The analysis pane shows every note, and so does <span class="k">TumbleData.Notes</span>
+          from code. Each one starts with what it is about, and the <a href="generating.html#honesty">Generating</a> page
+          lists them all. <span class="k">TumbleAudit.MeetsRequest(puzzle)</span> tells you whether a puzzle got everything
+          its settings asked for, <span class="k">TumbleAudit.Missing(puzzle)</span> lists what it missed, and a pack's
+          <strong>Re-roll &gt; Fallbacks</strong> replaces the ones that missed.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="stars">"Target difficulty: 5 stars not found in 40 tries; closest was 4."</h2>
+        <p>The stars come from the par and from the rolls the cube spends turning beyond the plain walk, so they follow
+          the board: a bigger board makes longer puzzles, and fewer places to turn on the spot make more turning work. The
+          note ends with what to try: a bigger or smaller board, more or fewer obstacles, or less turning room. Also:</p>
+        <ul>
+          <li>raise <strong>Max attempts</strong> under Advanced, so more seeds are tried;</li>
+          <li>for fewer stars, use fewer gimmicks. Gimmicks add rolls, so puzzles with them rate higher, and the note says
+            so when that is why it missed. Measured, a ReachGoal puzzle with two keys or switches rarely rates below 3
+            stars and one with three or more rarely below 5 (below 4 when stamping targets), and a multi-face tile rarely
+            goes below 3. <strong>Auto</strong> raises the
+            target to those floors and says why.</li>
+        </ul>
+        <p>A <strong>Tight</strong> trim re-rates the stars after cutting the board, so it can move a puzzle off its
+          target. The puzzle then carries a "Difficulty:" note saying so.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="verified">"Verified: no puzzle in 40 tries ..."</h2>
+        <p>Two notes start this way.</p>
+        <ul>
+          <li><strong>"... was solvable with a par of 30 or more rolls ..."</strong>: no board was sound, meaning solvable,
+            inside the par window and the coverage, and with no way to get stuck when <strong>No soft locks</strong> is on.
+            The note gives the closest puzzle's par and coverage. Widen the par window, lower the minimum coverage, use a
+            bigger board, or fewer obstacles.</li>
+          <li><strong>"... had room for every gimmick asked for ..."</strong>: every board was short of at least one
+            gimmick, and the notes above it say which. A bigger board or fewer gimmicks fits.</li>
+        </ul>
+        <div class="callout tip"><p><strong>Auto</strong> fixes the settings known to fight each other, and the window
+          shows what it would change before you press it.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="room">Fewer gimmicks than asked</h2>
+        <p>Every gimmick is placed where it makes the puzzle longer, and the start is then picked so that every one of
+          them matters. That is why a puzzle sometimes has fewer than you asked for:</p>
+        <ul>
+          <li><strong>"Keys:", "Switches:", "Portals:" and the like</strong> say the board only had room for some of them,
+            and why: no tile where one would lengthen the puzzle, or nowhere left to put it. Bigger boards, fewer
+            obstacles or fewer of that gimmick help. Verified generation tries more seeds first, and the window's
+            <strong>Only on target</strong> keeps just the puzzles that got everything.</li>
+          <li><strong>"Gimmicks:"</strong> says a gimmick made no difference from the best start and was taken away, which
+            never changes the par. It can also say a gimmick was left on because taking it away would let the cube get
+            stuck.</li>
+        </ul>
+        <p>Turntables, crumbling tiles and portals are placed as tools the best solution has to use, so they need room for
+          a route through them, and a crowded board may not have one.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="bits">Too many targets, keys and switches</h2>
+        <p>Targets, keys, switches, the faces of multi-face tiles and crumbling tiles each double the positions the solver
+          has to weigh, so together they are limited to 10. The window counts them for you, and <strong>Auto</strong>
+          cuts the last ones placed (crumbling tiles first, then multi-face faces, switches and keys) until they fit.
+          Avoid tiles, one-way tiles, turntables and portals don't count toward the limit.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="stuck">"Can get stuck"</h2>
+        <p>A plain board can't trap the cube, because every roll can be rolled back. One-way tiles, switches, turntables
+          and crumbling tiles can, because what they do can't be undone by rolling back. The solver checks every position
+          and reports <span class="k">CanGetStuck</span> when a player could reach one that can never be won.</p>
+        <ul>
+          <li><strong>No soft locks</strong> is on by default, and then only puzzles where it can't happen are kept.</li>
+          <li>Turn it off for harder puzzles where a wrong move can cost the game, and give players Undo and Restart, as
+            the demo does. Its hint also says when there is no way on from where the player is.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="slow">Generation feels slow</h2>
+        <p>Measured on a desktop PC outside Unity, 5 builds of each preset (your machine and Unity's runtime will differ,
+          and a phone is slower):</p>
+        <table>
+          <tr><th>Puzzle</th><th>Time for one verified puzzle</th></tr>
+          <tr><td>Every other preset: plain, shaped and trimmed boards, targets, keys, switches, avoid, one-way and
+            multi-face tiles, turntables</td><td>2 to 46 ms</td></tr>
+          <tr><td>Portals</td><td>73 to 95 ms</td></tr>
+          <tr><td>Crumbling tiles</td><td>39 to 291 ms</td></tr>
+          <tr><td>The Everything preset</td><td>0.3 to 0.7 s</td></tr>
+        </table>
+        <p>The slow case is many targets in any order together with keys and switches, which can take from several
+          seconds to over a minute a board. Fewer targets, keys or switches, or a smaller board, build much faster.</p>
+        <ul>
+          <li>In the window, generation runs on a background thread with a progress bar that says what the board is doing,
+            and Cancel stops it within a fraction of a second. The <strong>Time limit</strong> (60 seconds by default) keeps the closest
+            board that finished, with a "Time limit:" note.</li>
+          <li>In a game, use the <span class="k">Async</span> methods, as the demo does for Endless, or make levels ahead
+            of time in the editor and ship them as a pack.</li>
+          <li>Hints solve from where the player is. In the demo's checks, on 20 puzzles from 10 presets, the slowest hint
+            took 4 ms.</li>
+          <li>On WebGL there are no threads, so the demo makes Endless puzzles on the main thread there, and the game
+            pauses while it does.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="budget">"Solver: the search stopped at ... states"</h2>
+        <p>The generator, the inspectors' Verify and hints always give the solver room for every position the board can
+          hold, so you never see this on their puzzles. It only happens when your own code calls
+          <span class="k">TumbleSolver</span> with a budget smaller than the board. Pass
+          <span class="k">TumbleSolver.StatesOnBoard(puzzle)</span> as the budget and the search is never cut.</p>
+        <p>"Solver: more than 1,000,000,000 best solutions; the count stops there." only means the count is capped. It
+          happens on big open boards, where many best solutions differ only in the order of a few rolls.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="input">The demo ignores taps or keys</h2>
+        <p>The demo uses the Input System package. Set <strong>Project Settings &gt; Player &gt; Active Input
+          Handling</strong> to <em>Input System Package</em> or <em>Both</em>. The hub makes an EventSystem with the Input
+          System's UI module when the scene has none. If your scene already has an EventSystem, its input module has to
+          match your input handling. Presses on the HUD's card and buttons never roll the cube.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="pink">Pink or dark in a pipeline</h2>
+        <ul>
+          <li><strong>Pink in a build:</strong> the demo makes its materials in code, and a build strips shaders that only
+            code uses. Before every build, <span class="k">TumbleLookKeeper</span> writes
+            <code>Runtime/Demo/Resources/SimpleTumbleLook.mat</code> with the active pipeline's lit shader, so the build
+            keeps it. If you see pink, check that file exists after a build (deleting it is fine: the next build writes it
+            again).</li>
+          <li><strong>Dark or tinted in HDRP:</strong> out of the box HDRP uses physical light units, automatic exposure
+            and sky lighting. <span class="k">TumbleDemo.HdrpLook</span> (on by default) adds a global volume at priority
+            10 with a fixed exposure and a gradient sky, and sets the sun in lux, so the demo looks the same as on the
+            other pipelines. Turn it off to let your own volumes and lights take over.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="progress">Resetting the demo's progress</h2>
+        <p>The demo saves each pack level's best rolls in PlayerPrefs, under
+          <code>SimpleTumble.Demo.Best.&lt;pack name&gt;.&lt;level&gt;</code>. Call
+          <span class="k">TumblePackProgress.Clear(packName, count)</span> to forget a pack, or delete those keys. A pack's
+          progress is filed under its pack name, so renaming a pack starts it fresh.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="seeds">Seeds and versions</h2>
+        <p>The same settings and seed always give the same puzzle within a version of Simple Tumble. A future version that
+          improves the generator may change what a seed produces. Saved assets store the puzzle itself, not just its seed,
+          so your saved puzzles and packs never change. Verified generation stores the seed that actually worked, such as
+          <code>level-7-5#1</code>, so copying a puzzle's own seed always rebuilds that exact puzzle.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="console">Console messages</h2>
+        <ul>
+          <li><strong>"[Simple Tumble] Documentation page not found"</strong>: the documentation menu looks for these pages
+            in a folder whose path contains <code>SimpleTumble</code> and <code>Documentation</code>. Keep the
+            Documentation folder inside the Simple Tumble folder.</li>
+          <li><strong>"[Simple Tumble] Generation failed"</strong>: something went wrong on the window's generation
+            thread. Please send the message with your settings and seed.</li>
+          <li><strong>"[Simple Tumble] Kept ... in the build for the demo"</strong>: the build step wrote the look
+            material, which is expected after you switch render pipelines.</li>
+          <li><strong>"[Simple Tumble] No lit shader found for the active render pipeline"</strong>: the pipeline asset
+            has no default material, so the demo may draw pink in a build. Give the pipeline asset a default
+            material.</li>
+          <li><strong>"[Simple Tumble] Exported 12 file(s) from ..."</strong>: a pack's Export all finished.</li>
+          <li><strong>"Simple Tumble hub: no picture for ..."</strong>: a mode card's picture couldn't be drawn. The card
+            still works without it.</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2 id="ask">Still stuck</h2>
+        <p>Email <a href="mailto:livingfailuregames@gmail.com">livingfailuregames@gmail.com</a> with your Unity version
+          and, for a question about one puzzle, its seed and settings. <strong>Copy seed</strong> and <strong>Copy
+          solution</strong> in the analysis pane make that easy, and a seed rebuilds the puzzle exactly.</p>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="footer">
+    <p>Simple Tumble by Living Failure. <a href="about.html">About and support</a></p>
+  </div>
+
+</div>
+</body>
+</html>

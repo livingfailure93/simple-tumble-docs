@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Tumble - Documentation</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="format-selector" id="top">
+    <span class="format-label">View:</span>
+    <a href="index.html" class="format-link active">Multi-Page</a>
+    <a href="single-page.html" class="format-link">Single Page</a>
+  </div>
+
+  <nav class="navbar"><ul>
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="quick-start.html">Quick Start</a></li>
+    <li><a href="generating.html">Generating</a></li>
+    <li><a href="api-reference.html">API Reference</a></li>
+    <li><a href="demos.html">Demos</a></li>
+    <li><a href="troubleshooting.html">Troubleshooting</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul></nav>
+
+  <div class="hero">
+    <h1>Simple Tumble</h1>
+    <p class="tagline">Rolling cube puzzles for Unity that are generated, solved exactly and rated.</p>
+    <p class="sub-tagline">Simple Tumble builds a rolling cube puzzle from your settings, then proves it can be solved and
+      works out its <strong>par</strong>, the fewest rolls it takes. The cube tips from tile to tile, and the puzzle is
+      won with the right face down on the goal or pressed onto every target. It can add keys and doors, switches and
+      gates, avoid and one-way tiles, multi-face tiles, turntables, crumbling tiles and portals, on square boards or
+      shaped ones. Every puzzle is rated 1 to 5 stars and can be saved as a ScriptableObject, exported as a PNG or SVG
+      picture, or played in the included 3D demo.</p>
+    <div class="pill">Version 1.0, by Living Failure</div>
+  </div>
+
+  <div class="page-layout">
+    <aside class="toc">
+      <h3>On this page</h3>
+      <ul>
+        <li><a href="#what">What it is</a></li>
+        <li><a href="#rules">The rules</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#verified">Why "verified"</a></li>
+        <li><a href="#start">Getting started</a></li>
+      </ul>
+    </aside>
+    <main class="content">
+
+      <div class="section">
+        <h2 id="what">What it is</h2>
+        <p>Simple Tumble is a rolling cube puzzle generator with a solver built in. A cube sits on a grid of tiles, and each
+          roll tips it over one of its bottom edges onto the next tile north, east, south or west. Every roll changes which
+          face is down, so getting the right face onto the right tile takes planning: the straight route usually arrives
+          the wrong way up. You choose the board and what goes on it, and it builds a puzzle for you. Then it searches
+          every position the puzzle can reach, so you know for certain that it can be solved and how many rolls the best
+          solution takes.</p>
+        <p>The core doesn't care what the cube looks like. Tiles, faces and directions are plain numbers, so the same
+          puzzle can be a die, a crate, a robot or anything else that tumbles. In the editor pictures and in the demo every
+          face has its own shape as well as its own colour (a red dot, a blue square, a yellow triangle, a green diamond, a
+          purple star and an orange hexagon), so colour-blind players can tell them apart.</p>
+        <p>Everything is deterministic. The same settings and the same seed always give the same puzzle, and every puzzle
+          keeps the settings and seed it was made from. When the generator can't give you exactly what you asked for, it
+          says so in the puzzle's notes instead of quietly handing you something else.</p>
+      </div>
+
+      <div class="section">
+        <h2 id="rules">The rules</h2>
+        <div class="feature-grid">
+          <div class="feature-card"><h4>Reach the goal</h4><p>Roll the cube onto the goal tile with the goal face down.
+            Arriving with any other face down doesn't count, so the cube has to turn on the way.</p></div>
+          <div class="feature-card"><h4>Stamp the targets</h4><p>Land on every target tile (1 to 8 of them) with the goal
+            face down to stamp it. They can be stamped in any order, or in their numbered order as checkpoints.</p></div>
+        </div>
+        <div class="callout info"><p>Walls and holes block the cube the same way, and so does the edge of the board. A
+          roll the rules don't allow simply doesn't happen, and the rules say why. Every gimmick follows the same idea:
+          the cube is either allowed onto a tile or it isn't, and what it does there is fixed.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="features">Features</h2>
+        <div class="feature-grid">
+          <div class="feature-card"><h4>Proven par</h4><p>The solver searches every position the puzzle can reach, so the
+            par is the true minimum and not an estimate. It also counts how many best solutions there are.</p></div>
+          <div class="feature-card"><h4>Difficulty in stars</h4><p>A 1 to 5 star rating from the par and the turning the
+            cube has to do beyond the plain walk. Ask for a star count and the generator picks the start to match.</p></div>
+          <div class="feature-card"><h4>Board size and shape</h4><p>Boards from 2 to 24 tiles each way, as a full
+            rectangle, a cross, ring, diamond, circle, heart, L, T or U, or any outline you type in, with walls and holes on
+            up to 45% of it.</p></div>
+          <div class="feature-card"><h4>Keys, doors, switches and gates</h4><p>Up to 4 keys, each opening its own door,
+            and up to 4 switches that flip 1 to 3 gates each. Face locks make a key or a switch answer only one face.</p></div>
+          <div class="feature-card"><h4>Tricky tiles</h4><p>Avoid tiles one face must never be down on, one-way tiles,
+            multi-face tiles that need 2 or 3 faces pressed on them, turntables, crumbling tiles that break once the cube
+            rolls off, and portal pairs.</p></div>
+          <div class="feature-card"><h4>Every gimmick matters</h4><p>Each one is placed where it lengthens the puzzle,
+            and the puzzle is checked so that none is left doing nothing. Turntables, crumbling tiles and portals are
+            placed as tools the best solution needs.</p></div>
+          <div class="feature-card"><h4>No soft locks</h4><p>Every puzzle reports whether the cube can reach a position it
+            can't win from. <span class="k">NoSoftLocks</span>, on by default, only accepts puzzles where that never
+            happens.</p></div>
+          <div class="feature-card"><h4>Printable export</h4><p>Save any puzzle as a PNG or SVG: the colour view, a black
+            on white printable sheet that draws every face by its shape alone, or an answer key with the best solution
+            drawn on as a line.</p></div>
+          <div class="feature-card"><h4>ScriptableObjects</h4><p>Save single puzzles or ordered packs, with inspectors
+            that preview, re-check and regenerate them.</p></div>
+          <div class="feature-card"><h4>Play rules included</h4><p><span class="k">TumbleRules</span> tells your game what
+            a roll does, using the same rules the solver counted with, so the game and the par always agree. It also gives
+            hints from any position.</p></div>
+          <div class="feature-card"><h4>Editor tooling</h4><p>One Tumble Generator window with 20 presets, an Auto button
+            that fixes settings that fight each other, and generation on a background thread with a progress bar, Cancel
+            and a time limit. Watch the best solution play in 2D or with a real 3D cube.</p></div>
+          <div class="feature-card"><h4>A 3D demo</h4><p>Four game modes with endless puzzles and 44 ready-made levels,
+            with sounds and effects, all built in code. It works in URP, HDRP and the Built-in pipeline.</p></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 id="how">How it works</h2>
+        <div class="step"><div class="step-number">1</div><div class="step-content">
+          <h4>Configure</h4><p>Pick the board, the mode, the goal face and the gimmicks, in the Tumble Generator window or
+          with a <span class="k">TumbleSettings</span> object in code.</p></div></div>
+        <div class="step"><div class="step-number">2</div><div class="step-content">
+          <h4>Lay out</h4><p>Walls and holes are placed so the free tiles stay connected and keep the amount of turning
+          room you asked for. Then a few goals (or sets of targets) are tried.</p></div></div>
+        <div class="step"><div class="step-number">3</div><div class="step-content">
+          <h4>Solve and pick the start</h4><p>One search back from the win gives the exact par from every position on the
+          board. The start is picked from those, inside your par window and star band. Each gimmick then goes where it
+          lengthens the puzzle most and the start is picked again, preferring one every gimmick matters to. A gimmick
+          that still does nothing from that start is taken away, which never changes the par.</p></div></div>
+        <div class="step"><div class="step-number">4</div><div class="step-content">
+          <h4>Rate and check</h4><p>The finished puzzle is solved again from its start. It records the par, one best
+          solution, how many best solutions exist, whether the cube can get stuck, and the stars. A puzzle that misses
+          what you asked for is built again from the next seed.</p></div></div>
+        <div class="step"><div class="step-number">5</div><div class="step-content">
+          <h4>Use it</h4><p>Save it as an asset, export a picture of it, play it in the demo, or read the
+          <span class="k">TumbleData</span> in your own scripts.</p></div></div>
+      </div>
+
+      <div class="section">
+        <h2 id="verified">Why "verified"</h2>
+        <p>A rolling cube puzzle is easy to get wrong by hand. The cube can turn up the wrong way after a long walk, a key
+          can sit where no one would ever bother fetching it, and a one-way tile can trap the cube for good. Simple Tumble
+          proves the things you design around:</p>
+        <ul>
+          <li><strong>The par is real.</strong> It is the shortest solution that exists, so a 30-roll puzzle really takes
+            30 rolls.</li>
+          <li><strong>Every position is searched.</strong> The generator gives the solver room for every position the
+            board can hold, so its puzzles are always solved exactly and never cut short.</li>
+          <li><strong>Getting stuck is measured.</strong> One-way tiles and switches can strand the cube. Every puzzle
+            reports whether that can happen, and by default you only get puzzles where it can't.</li>
+          <li><strong>Gimmicks earn their place.</strong> Taking any gimmick away would change the puzzle. A key you
+            would never need, or an avoid tile off every best route, isn't left on the board.</li>
+          <li><strong>Misses are reported.</strong> When a star count, a par window or a gimmick that doesn't fit can't be
+            met, the puzzle's notes say what happened and what you got instead.</li>
+        </ul>
+        <div class="callout warning"><p><strong>One honest limit:</strong> a few heavy settings take a long time to build,
+          above all many targets in any order together with keys and switches, which can take a minute or more a board.
+          The window has a time limit (60 seconds by default) and keeps the closest board that finished, with a note.
+          Fewer targets, keys or switches, or a smaller board, build much faster.</p></div>
+      </div>
+
+      <div class="section">
+        <h2 id="start">Getting started</h2>
+        <p>Open <strong>Window &gt; Living Failure &gt; Simple Tumble &gt; Tumble Generator</strong>, pick a preset, press
+          <strong>Generate</strong> and look at the analysis on the right. Then open the demo scene and play. The
+          <a href="quick-start.html">Quick Start</a> walks through the whole loop in about five minutes.</p>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="footer">
+    <p>Simple Tumble by Living Failure. <a href="about.html">About and support</a></p>
+  </div>
+
+</div>
+</body>
+</html>
