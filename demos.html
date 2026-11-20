@@ -240,7 +240,8 @@ game.Won += g =&gt; Debug.Log($"Solved in {g.Moves} rolls, par {g.Par}");
 game.Roll(Cube.East);                                  // roll from your own code (keys, swipes and taps work too)</code></pre>
         <ul>
           <li><strong>Input:</strong> <span class="k">TumbleGame</span> reads the keys, swipes and taps itself while it is
-            enabled. Your code can roll too, with <code>Roll(dir)</code>, <code>Push(screenDirection)</code> and
+            enabled. To drive it yourself, turn off <code>KeyboardInput</code>, <code>PointerInput</code> or both. Your
+            code can roll either way, with <code>Roll(dir)</code>, <code>Push(screenDirection)</code> and
             <code>Tap(screenPoint)</code>, and call <code>Undo()</code>, <code>Restart()</code>, <code>ShowHint()</code>
             and <code>StartAutoSolve()</code>. Set <code>PointerBlocked</code> so a press over your own UI doesn't roll the
             cube.</li>

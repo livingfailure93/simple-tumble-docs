@@ -1075,7 +1075,8 @@ Debug.Log(string.Join(" ", m.Moves.Select(d => "NESW"[d])));   // N N N S E S S 
             <code>Generate(mode, settings)</code>, <code>Begin(puzzle)</code>, <code>NextGame()</code> and
             <code>BackToHub()</code>.</td></tr>
           <tr><td><code>TumbleGame</code></td><td>Plays a puzzle on a <code>TumbleBoardView</code>: rolls against par, undo,
-            restart, hints and solving by itself, with keyboard, swipe, tap and camera controls. Start a game with
+            restart, hints and solving by itself, with keyboard, swipe, tap and camera controls (<code>KeyboardInput</code>,
+            <code>PointerInput</code> and <code>CameraControls</code> turn each off or on). Start a game with
             <code>Begin(puzzle)</code>, drive it with <code>Roll(dir)</code>, <code>Push(screenDir)</code>,
             <code>Tap(screenPoint)</code>, <code>Undo()</code>, <code>Restart()</code>, <code>ShowHint()</code> and
             <code>StartAutoSolve()</code>, and listen to <code>Moved</code>, <code>Won</code>, <code>Message</code>,
@@ -1325,7 +1326,8 @@ game.Won += g =&gt; Debug.Log($"Solved in {g.Moves} rolls, par {g.Par}");
 game.Roll(Cube.East);                                  // roll from your own code (keys, swipes and taps work too)</code></pre>
         <ul>
           <li><strong>Input:</strong> <span class="k">TumbleGame</span> reads the keys, swipes and taps itself while it is
-            enabled. Your code can roll too, with <code>Roll(dir)</code>, <code>Push(screenDirection)</code> and
+            enabled. To drive it yourself, turn off <code>KeyboardInput</code>, <code>PointerInput</code> or both. Your
+            code can roll either way, with <code>Roll(dir)</code>, <code>Push(screenDirection)</code> and
             <code>Tap(screenPoint)</code>, and call <code>Undo()</code>, <code>Restart()</code>, <code>ShowHint()</code>
             and <code>StartAutoSolve()</code>. Set <code>PointerBlocked</code> so a press over your own UI doesn't roll the
             cube.</li>
